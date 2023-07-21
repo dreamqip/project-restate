@@ -3,25 +3,42 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /*https://tailwindcss.com/docs/customizing-colors#using-css-variables*/
+
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --accents-1: 0 0% 98%;
+  --accents-2: 0 0% 92%;
+  --accents-3: 0 0% 60%;
+  --accents-4: 0 0% 53%;
+  --accents-5: 0 0% 40%;
+  --accents-6: 0 0% 27%;
+  --accents-7: 0 0% 20%;
+  --accents-8: 0 0% 7%;
+  --error: 0 100% 50%;
+  --error-light: 0 100% 60%;
+  --error-dark: 0 100% 45%;
+  --error-lighter: 357 69% 90%;
+  --success: 212 100% 48%;
+  --success-light: 212 100% 60%;
+  --success-dark: 213 94% 42%;
+  --success-lighter: 215 100% 91%;
+  --violet: 270 67% 47%;
+  --violet-light: 261 55% 61%;
+  --violet-dark: 262 55% 35%;
+  --violet-lighter: 259 57% 87%;
+  --cyan: 167 100% 74%;
+  --cyan-light: 166 100% 83%;
+  --cyan-dark: 167 80% 60%;
+  --cyan-lighter: 174 100% 92%;
+  --highlight-purple: 305 94% 54%;
+  --highlight-pink: 330 100% 50%;
+  --highlight-magenta: 336 82% 57%;
+  --highlight-yellow: 58 100% 50%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
   }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
 }
