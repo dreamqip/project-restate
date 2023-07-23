@@ -1,11 +1,11 @@
 import type { AccountRoot, SignerList } from 'xrpl/dist/npm/models/ledger';
 
-import { getWallet } from '@/lib/wallet';
 import { getWalletDetails } from '@/lib/xrpl';
 import { useEffect, useState } from 'react';
 import { dropsToXrp } from 'xrpl';
 
 import { useIsConnected } from './use-is-connected';
+import { useWallet } from './use-wallet';
 import { useXRPLClient } from './use-xrpl-client';
 
 type XRPLAddress = {
@@ -15,7 +15,7 @@ type XRPLAddress = {
 
 export function useWalletDetails() {
   const { client } = useXRPLClient();
-  //   const { wallet } = useWallet();
+  const { wallet } = useWallet();
   const isConnected = useIsConnected();
 
   const [balance, setBalance] = useState<string | undefined>(undefined);
@@ -32,12 +32,9 @@ export function useWalletDetails() {
 
   useEffect(() => {
     const getBalance = async () => {
-      if (!client || !isConnected) {
+      if (!client || !isConnected || !wallet) {
         return;
       }
-
-      // TODO: Temporarily hardcoding a wallet address for testing purposes.
-      const wallet = getWallet('12345678');
 
       const walletDetails = await getWalletDetails(client, wallet);
 
@@ -60,7 +57,7 @@ export function useWalletDetails() {
     };
 
     getBalance();
-  }, [client, isConnected]);
+  }, [client, isConnected, wallet]);
 
   return {
     accountAddress,
