@@ -3,5 +3,5 @@ export default function MarketPlaceLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main className='p-32'>{children}</main>;
+  return <main className='p-4 sm:p-32'>{children}</main>;
 }

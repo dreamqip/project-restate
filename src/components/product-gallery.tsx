@@ -6,11 +6,11 @@ import React, { useState } from 'react';
 
 import { Button } from './ui';
 
-interface CarouselProps {
+interface ProductGalleryProps {
   images: string[];
 }
 
-export default function ProductGallery({ images }: CarouselProps) {
+export default function ProductGallery({ images }: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const prevSlide = () => {
@@ -27,12 +27,12 @@ export default function ProductGallery({ images }: CarouselProps) {
 
   return (
     <div>
-      <div className='relative -mx-32 flex gap-4 overflow-hidden'>
+      <div className='relative flex gap-4 overflow-hidden sm:-mx-32'>
         <div
           style={{
             transform: `translateX(-${currentIndex * (384 + 16)}px)`,
           }}
-          className='ml-32 flex transition-transform duration-300 ease-in-out'
+          className='flex transition-transform duration-300 ease-in-out sm:ml-32'
         >
           {images.map((image, index) => (
             <div className='mr-4 flex-none' key={index}>
@@ -56,7 +56,6 @@ export default function ProductGallery({ images }: CarouselProps) {
         >
           <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' /> Previous
         </Button>
-
         <Button
           className='p-0 text-lg font-medium text-accents-3 hover:text-accents-1'
           onClick={nextSlide}
