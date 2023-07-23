@@ -97,11 +97,11 @@ export default function VerifyMnemonics() {
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
-              <FormLabel className='leading-none'>
+              <FormLabel className='font-normal leading-none'>
                 {/* TODO: A bit confusing code, need to refactor it if possible */}
                 By creating a new wallet, you agree with Restate&apos;s{' '}
                 <Link className='text-cyan' href='/terms'>
-                  Terms and Conditions
+                  Terms & Conditions
                 </Link>{' '}
                 and{' '}
                 <Link className='text-cyan' href='/privacy'>
