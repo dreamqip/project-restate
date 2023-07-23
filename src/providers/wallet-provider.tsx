@@ -13,7 +13,7 @@ import { getWallet } from '../lib/wallet';
 
 type WalletContextType = {
   setWallet: (wallet: xrplWallet) => void;
-  signIn: (seed: string, password: string) => void;
+  signIn: (password: string) => void;
   signOut: () => void;
   wallet: undefined | xrplWallet;
 };
@@ -28,7 +28,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
   const router = useRouter();
   const [wallet, setWallet] = useState<undefined | xrplWallet>(undefined);
 
-  const signIn = useCallback((seed: string, password: string) => {
+  const signIn = useCallback((password: string) => {
     const wallet = getWallet(password);
     setWallet(wallet);
 
