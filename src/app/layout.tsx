@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Networks } from '@/lib/networks';
+import { LedgerProvider } from '@/providers/ledger-provider';
 import { WalletProvider } from '@/providers/wallet-provider';
 import { XRPLClientProvider } from '@/providers/xrpl-provider';
 import { Inter } from 'next/font/google';
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.variable}>
         <XRPLClientProvider network={Networks.Testnet}>
-          <WalletProvider>{children}</WalletProvider>
+          <WalletProvider>
+            <LedgerProvider>{children}</LedgerProvider>
+          </WalletProvider>
         </XRPLClientProvider>
       </body>
     </html>
