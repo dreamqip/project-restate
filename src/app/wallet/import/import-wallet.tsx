@@ -1,5 +1,6 @@
 'use client';
 
+import TermsAndPrivacyLinks from '@/components/terms-and-privacy-links';
 import { Button, Checkbox, Input } from '@/components/ui';
 import {
   Form,
@@ -11,7 +12,6 @@ import {
 import { useWallet } from '@/hooks/use-wallet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validateMnemonic } from 'bip39';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Wallet } from 'xrpl';
@@ -75,13 +75,7 @@ export default function ImportWallet() {
               </FormControl>
               <FormLabel className='font-normal leading-none'>
                 By importing an existing wallet, you agree with Restate&apos;s{' '}
-                <Link className='text-cyan' href='/terms'>
-                  Terms & Conditions
-                </Link>{' '}
-                and{' '}
-                <Link className='text-cyan' href='/privacy'>
-                  Privacy Policy
-                </Link>
+                <TermsAndPrivacyLinks />
               </FormLabel>
             </FormItem>
           )}

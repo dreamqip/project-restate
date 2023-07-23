@@ -1,5 +1,6 @@
 'use client';
 
+import TermsAndPrivacyLinks from '@/components/terms-and-privacy-links';
 import { Button, Checkbox, Input } from '@/components/ui';
 import {
   Form,
@@ -98,16 +99,8 @@ export default function VerifyMnemonics() {
                 />
               </FormControl>
               <FormLabel className='font-normal leading-none'>
-                {/* TODO: A bit confusing code, need to refactor it if possible */}
                 By creating a new wallet, you agree with Restate&apos;s{' '}
-                <Link className='text-cyan' href='/terms'>
-                  Terms & Conditions
-                </Link>{' '}
-                and{' '}
-                <Link className='text-cyan' href='/privacy'>
-                  Privacy Policy
-                </Link>
-                .
+                <TermsAndPrivacyLinks />
               </FormLabel>
             </FormItem>
           )}
