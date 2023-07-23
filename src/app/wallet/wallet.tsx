@@ -24,8 +24,10 @@ export default function Wallet() {
   );
 
   useEffect(() => {
-    if (!wallet) {
+    if (!wallet && localStorage.getItem('wallet')) {
       router.replace('/wallet/login');
+    } else if (!wallet) {
+      router.replace('/wallet/create');
     }
   }, [router, wallet]);
 
