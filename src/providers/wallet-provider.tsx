@@ -22,17 +22,30 @@ export const WalletContext = createContext<undefined | WalletContextType>(
   undefined,
 );
 
-// TODO: Currently in implementation, not used
-
 export function WalletProvider({ children }: PropsWithChildren) {
   const router = useRouter();
   const [wallet, setWallet] = useState<undefined | xrplWallet>(undefined);
 
   const signIn = useCallback((password: string) => {
-    const wallet = getWallet(password);
+    const walletFromStorage = getWallet(password);
+    if (!walletFromStorage) {
+      return;
+    }
+
+    if (walletFromStorage.seed) {
+      const wallet = xrplWallet.fromSeed(walletFromStorage.seed);
+      setWallet(wallet);
+      console.log('wallet instance', wallet);
+      return;
+    }
+
+    const wallet = new xrplWallet(
+      walletFromStorage.publicKey,
+      walletFromStorage.privateKey,
+    );
     setWallet(wallet);
 
-    console.log(wallet);
+    console.log('wallet instance', wallet);
   }, []);
 
   const signOut = useCallback(() => {
