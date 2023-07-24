@@ -26,10 +26,10 @@ function randomInRange(min: number, max: number): number {
 }
 
 export default function VerifyMnemonics() {
-  const { mnemonics: mnemonics } = useMnemonics();
-  const { setWallet } = useWallet();
-
   const router = useRouter();
+
+  const { mnemonics } = useMnemonics();
+  const { setWallet } = useWallet();
 
   const [randomMnemonicIndex, setRandomMnemonicIndex] = useState<number>(0);
 
@@ -37,8 +37,6 @@ export default function VerifyMnemonics() {
   useEffect(() => {
     setRandomMnemonicIndex(randomInRange(0, 11));
   }, []);
-
-  console.log('mnemonics', mnemonics);
 
   // Wrap the form schema in useMemo to avoid re-creating it on every render.
   const formSchema = useMemo(() => {
@@ -60,11 +58,7 @@ export default function VerifyMnemonics() {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-
     const wallet = Wallet.fromSeed(mnemonicsToSeed(mnemonics.join(' ')));
-    console.log('wallet', wallet);
 
     setWallet(wallet);
     router.push('/wallet/set-password');
