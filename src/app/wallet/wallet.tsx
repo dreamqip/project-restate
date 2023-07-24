@@ -1,33 +1,43 @@
 'use client';
 
 import { Button } from '@/components/ui';
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useLedger } from '@/hooks/use-ledger';
 import { useWallet } from '@/hooks/use-wallet';
 import { useWalletDetails } from '@/hooks/use-wallet-details';
 import { type AccountTransaction, TransactionTypes } from '@/types';
-import { CornerLeftDownIcon, SendIcon } from 'lucide-react';
+import { CornerLeftDownIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import SendDialog from './send-dialog';
 import Transaction from './transaction';
 
 const FIXED_DOLLAR_RATE = 3;
 
 export default function Wallet() {
   const router = useRouter();
-  const { fundWallet, getTransactions } = useLedger();
   const { wallet } = useWallet();
   const { accountExists, balance } = useWalletDetails();
+  const { fundWallet, getTransactions } = useLedger();
 
   const [transactions, setTransactions] = useState<AccountTransaction[] | null>(
     null,
   );
 
+  const [_, copy] = useCopyToClipboard();
+
   useEffect(() => {
+    // If there is no wallet in the context and no wallet in the local storage
+    // redirect to the create wallet page
+    if (!wallet && !localStorage.getItem('wallet')) {
+      router.replace('/wallet/create');
+    }
+
+    // If there is no wallet in the context but there is a wallet in the local storage
+    // redirect to the login page
     if (!wallet && localStorage.getItem('wallet')) {
       router.replace('/wallet/login');
-    } else if (!wallet) {
-      router.replace('/wallet/create');
     }
   }, [router, wallet]);
 
@@ -63,8 +73,14 @@ export default function Wallet() {
         </span>
       </div>
       <div className='grid grid-cols-2 items-center gap-x-4'>
-        <Button prefixIcon={<SendIcon />}>Send</Button>
-        <Button prefixIcon={<CornerLeftDownIcon />}>Receive</Button>
+        {/* Renders button as the child of the DialogTrigger component */}
+        <SendDialog />
+        <Button
+          onClick={() => copy(wallet.classicAddress)}
+          prefixIcon={<CornerLeftDownIcon />}
+        >
+          Receive
+        </Button>
       </div>
       <div className='mt-8 border-t border-dashed border-accents-3'>
         {transactions && transactions.length > 0 ? (
