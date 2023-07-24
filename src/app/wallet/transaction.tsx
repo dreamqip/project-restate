@@ -1,6 +1,7 @@
 import type { TransactionTypes } from '@/types';
 
-import { dropsToXrp, xrpToDrops } from 'xrpl';
+import { formatDate, getTimeZoneString } from '@/lib/utils';
+import { dropsToXrp } from 'xrpl';
 
 type TransactionProps = {
   date: number;
@@ -16,8 +17,10 @@ export default function Transaction({
   return (
     <div className='grid gap-y-4 border-b border-dashed py-6'>
       <div className='grid'>
-        <span className='font-medium text-accents-3'>Time (UTC+1)</span>
-        <span>{date}</span>
+        <span className='font-medium text-accents-3'>
+          Time ({getTimeZoneString(date)})
+        </span>
+        <span>{formatDate(date)}</span>
       </div>
       <div className='flex justify-between'>
         <div className='grid'>
