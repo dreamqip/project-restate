@@ -1,4 +1,4 @@
-import Providers from './providers';
+import { MnemonicsProvider } from '@/providers/mnemonics-provider';
 
 export default function WalletLayout({
   children,
@@ -7,7 +7,7 @@ export default function WalletLayout({
 }) {
   return (
     <main className='p-32'>
-      <Providers>{children}</Providers>
+      <MnemonicsProvider>{children}</MnemonicsProvider>
     </main>
   );
 }
