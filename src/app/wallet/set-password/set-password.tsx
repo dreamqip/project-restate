@@ -155,7 +155,7 @@ export default function SetPassword() {
           disabled={!form.formState.isValid}
           type='submit'
         >
-          Create a new wallet
+          Set the password
         </Button>
       </form>
     </Form>
