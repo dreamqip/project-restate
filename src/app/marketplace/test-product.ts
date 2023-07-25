@@ -14,6 +14,7 @@ export type Asset = {
 };
 
 export type Product = Asset & {
+  nftId: string;
   price: string;
 };
 
@@ -28,6 +29,7 @@ export const MARKUP_PRODUCT: Product = {
     '/rolex-6.png',
   ],
   name: 'Rolex 1908',
+  nftId: '000801F480AF73F9982FAA3EBECAFD64D15B2BF54D8769618962EFA000000006',
   price: '5013 XRP',
   tagline:
     'A Timeless Masterpiece Crafted in 18 ct Gold, Blending Elegance with Sustainable Luxury.',
