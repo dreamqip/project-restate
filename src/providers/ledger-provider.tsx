@@ -30,6 +30,11 @@ import { useXRPLClient } from '@/hooks/use-xrpl-client';
 import { toXRPLMemos, toXRPLSigners } from '@/lib/transaction';
 import { createContext, type PropsWithChildren, useCallback } from 'react';
 
+interface GetTransactionsResponse {
+  marker?: unknown;
+  transactions: AccountTransaction[];
+}
+
 interface GetNFTsResponse {
   account_nfts: AccountNFToken[];
   marker?: unknown;
@@ -96,7 +101,7 @@ type LedgerContextType = {
   getNFTs: (payload?: GetNFTRequest) => Promise<GetNFTsResponse>;
   getTransactions: (
     payload?: GetTransactionsRequest,
-  ) => Promise<AccountTransaction[]>;
+  ) => Promise<GetTransactionsResponse>;
   mintNFT: (payload: MintNFTRequest) => Promise<MintNFTResponse>;
   sendPayment: (payload: SendPaymentRequest) => Promise<string>;
   //   setAccount: (payload: SetAccountRequest) => Promise<SetAccountResponse>;
@@ -141,7 +146,15 @@ export function LedgerProvider({ children }: PropsWithChildren) {
         if (!prepared.result?.transactions) {
           throw new Error("Couldn't get the transaction history");
         } else {
-          return prepared.result.transactions;
+          return {
+            marker: prepared.result.marker,
+            // Filter out failed transactions
+            transactions: prepared.result.transactions.filter(
+              (tx) =>
+                (tx.meta! as TransactionMetadata).TransactionResult ===
+                'tesSUCCESS',
+            ),
+          };
         }
       } catch (error) {
         throw error;
