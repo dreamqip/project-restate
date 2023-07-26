@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
+import { useMnemonics } from '@/hooks/use-mnemonics';
 import { useWallet } from '@/hooks/use-wallet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validateMnemonic } from 'bip39';
@@ -20,13 +21,14 @@ import * as z from 'zod';
 const formSchema = z.object({
   mnemonics: z.string().refine((v) => {
     return validateMnemonic(v);
-  }, 'Invalid mnemonics'),
-  terms: z.boolean().refine((v) => v === true, 'Terms must be accepted'),
+  }),
+  terms: z.boolean().refine((v) => v === true),
 });
 
 export default function ImportWallet() {
   const router = useRouter();
   const { setWallet } = useWallet();
+  const { setMnemonics } = useMnemonics();
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -43,6 +45,7 @@ export default function ImportWallet() {
     const wallet = Wallet.fromMnemonic(values.mnemonics);
 
     setWallet(wallet);
+    setMnemonics(values.mnemonics.split(' '));
     router.push('/wallet/set-password');
   }
 
