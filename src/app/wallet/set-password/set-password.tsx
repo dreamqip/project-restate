@@ -8,22 +8,23 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
+import { useMnemonics } from '@/hooks/use-mnemonics';
 import { useWallet } from '@/hooks/use-wallet';
+import { saveMnemonics } from '@/lib/mnemonics';
 import { saveWallet } from '@/lib/wallet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 const formSchema = z
   .object({
     confirmPassword: z.string(),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    securityTerms: z
-      .boolean()
-      .refine((v) => v === true, 'Terms must be accepted'),
+    password: z.string().min(8),
+    securityTerms: z.boolean().refine((v) => v === true),
   })
   .refine((v) => v.password === v.confirmPassword, {
     message: 'Passwords do not match',
@@ -31,6 +32,8 @@ const formSchema = z
   });
 
 export default function SetPassword() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       confirmPassword: '',
@@ -41,10 +44,11 @@ export default function SetPassword() {
     resolver: zodResolver(formSchema),
   });
 
+  // Get wallet and mnemonics from context
   const { wallet } = useWallet();
+  const { mnemonics } = useMnemonics();
 
-  const router = useRouter();
-
+  // Show password state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -56,14 +60,17 @@ export default function SetPassword() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  // Form submit handler
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    if (!wallet) {
-      console.error('Wallet is not defined');
+    if (!wallet || !mnemonics) {
+      toast.error('Wallet or mnemonics not found. Please try again.');
       return;
     }
 
+    // Save wallet and mnemonics to storage
     saveWallet(wallet, values.password);
-    router.push('/wallet');
+    saveMnemonics(mnemonics.join(' '), values.password);
+    router.replace('/wallet');
   };
 
   return (
