@@ -45,39 +45,4 @@
   body {
     @apply bg-background font-sans text-foreground antialiased;
   }
-
-  [data-sonner-toast] {
-    @apply px-4 py-2 font-sans !important;
-    border-radius: 2rem !important;
-    /* 
-    transition: .4s,opacity .4s,height .4s,box-shadow .2s,background .2s !important; */
-
-    &[data-type='success'] {
-      @apply bg-success-dark text-foreground !important;
-
-      &:hover {
-        @apply bg-success !important;
-      }
-
-      /* & [data-close-button] {
-        @apply relative order-last ml-auto translate-x-0 translate-y-0 bg-transparent text-foreground opacity-100 !important;
-      }
-
-      & [data-close-button] svg {
-        @apply h-4 w-4 !important;
-      } */
-    }
-
-    &[data-type='error'] {
-      @apply bg-error-dark text-foreground !important;
-
-      &:hover {
-        @apply bg-error !important;
-      }
-    }
-
-    /* & [data-icon] {
-      @apply text-success-dark fill-success-dark stroke-foreground stroke-2 !important;
-    } */
-  }
 }
