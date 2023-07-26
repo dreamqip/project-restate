@@ -48,7 +48,7 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!wallet}>
+        <Button className='mb-8 w-full' disabled={!wallet} variant='warning'>
           Cancel the offer
         </Button>
       </DialogTrigger>
@@ -66,7 +66,7 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
             maximus nunc bibendum viverra pretium.
           </DialogDescription>
         </DialogHeader>
-        <div className='flex items-baseline gap-2'>
+        <div className='flex gap-2 space-y-0'>
           <Checkbox
             checked={isChecked}
             id='terms'
@@ -82,6 +82,7 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
             className='w-full bg-transparent'
             disabled={!isChecked}
             onClick={onSubmit}
+            variant='destructive'
           >
             Sign & send a transaction
           </Button>

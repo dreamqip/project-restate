@@ -4,7 +4,6 @@ import { MARKUP_PRODUCT } from '@/app/marketplace/test-product';
 import AcceptOfferModal from '@/components/accept-offer-modal';
 import CancelOfferModal from '@/components/cancel-offer-modal';
 import CreateOfferModal from '@/components/create-offer-modal';
-import MintNftModal from '@/components/mint-nft-modal';
 import ProductGallery from '@/components/product-gallery';
 import Warranty from '@/components/warranty';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
@@ -33,7 +32,6 @@ export default function Product({ product }: ProductProps) {
       </div>
       <ProductGallery images={product.images} />
       <div className='max-w-sm'>
-        <MintNftModal product={product} />
         {sellOffers.length ? (
           isOwner ? (
             <CancelOfferModal product={product} />

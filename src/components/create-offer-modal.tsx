@@ -94,11 +94,11 @@ export default function CreateOfferModal({ product }: CreateOfferModalProps) {
           >
             <FormField
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='[&>*]:bg-transparent'>
                   {/* We need to show to the user word id in human readable format, so we add 1 to the index */}
                   <FormLabel>Sale Price</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} className='bg-transparent' />
                   </FormControl>
                 </FormItem>
               )}

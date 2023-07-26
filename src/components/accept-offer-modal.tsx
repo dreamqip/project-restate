@@ -72,7 +72,7 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
             maximus nunc bibendum viverra pretium.
           </DialogDescription>
         </DialogHeader>
-        <div className='flex items-baseline gap-2'>
+        <div className='flex gap-2 space-y-0'>
           <Checkbox
             checked={isChecked}
             id='terms'
