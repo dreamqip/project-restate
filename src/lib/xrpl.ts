@@ -1,8 +1,11 @@
 import type { AccountRoot, SignerList } from 'xrpl/dist/npm/models/ledger';
 
+import Big from 'big.js';
 import {
   classicAddressToXAddress,
   type Client,
+  type Node,
+  type TransactionStream,
   type Wallet,
   XrplError,
 } from 'xrpl';
@@ -65,59 +68,112 @@ export const getWalletDetails = async (
   }
 };
 
-type TransactionHistoryResponse = {
-  asd: any;
+export const countXRPDifference = (affected_nodes: Node[], address: string) => {
+  // Helper to find an account in an AffectedNodes array and see how much
+  // its balance changed, if at all. Fortunately, each account appears at most
+  // once in the AffectedNodes array, so we can return as soon as we find it.
+
+  // Note: this reports the net balance change. If the address is the sender,
+  // the transaction cost is deducted and combined with XRP sent/received
+
+  for (let i = 0; i < affected_nodes.length; i++) {
+    const node = affected_nodes[i];
+
+    if ('ModifiedNode' in node) {
+      // modifies an existing ledger entry
+      const ledger_entry = node.ModifiedNode;
+      if (
+        ledger_entry.LedgerEntryType === 'AccountRoot' &&
+        ledger_entry.FinalFields?.Account === address
+      ) {
+        if (!ledger_entry.PreviousFields?.hasOwnProperty('Balance')) {
+          console.log('XRP balance did not change.');
+        } else {
+          // Balance is in PreviousFields, so it changed. Time for
+          // high-precision math!
+          const old_balance = new Big(
+            ledger_entry.PreviousFields.Balance as string,
+          );
+          const new_balance = new Big(
+            ledger_entry.FinalFields.Balance as string,
+          );
+          const diff_in_drops = new_balance.minus(old_balance);
+          const xrp_amount = diff_in_drops.div(1e6);
+          if (xrp_amount.gte(0)) {
+            console.log('Received ' + xrp_amount.toString() + ' XRP.');
+            return {
+              received: true,
+              xrp_amount: xrp_amount.toString(),
+            };
+          } else {
+            console.log('Spent ' + xrp_amount.abs().toString() + ' XRP.');
+            return {
+              spent: true,
+              xrp_amount: xrp_amount.abs().toString(),
+            };
+          }
+        }
+      }
+    } else if ('CreatedNode' in node) {
+      const ledger_entry = node.CreatedNode;
+      if (
+        ledger_entry.LedgerEntryType === 'AccountRoot' &&
+        ledger_entry.NewFields.Account === address
+      ) {
+        const balance_drops = new Big(ledger_entry.NewFields.Balance as string);
+        const xrp_amount = balance_drops.div(1e6);
+        console.log(
+          'Received ' + xrp_amount.toString() + ' XRP (account funded).',
+        );
+        return {
+          funded: true,
+          xrp_amount: xrp_amount.toString(),
+        };
+      }
+    } // accounts cannot be deleted at this time, so we ignore DeletedNode
+  }
+
+  console.log('Did not find address in affected nodes.');
+  return;
 };
 
-type TransactionHistoryPayload = {
-  account: string;
-  command: string;
-  limit: number;
-  marker?: string;
+export const countXRPReceived = (tx: TransactionStream, address: string) => {
+  if (tx?.meta?.TransactionResult !== 'tesSUCCESS') {
+    console.log('Transaction failed.');
+    return;
+  }
+  if (tx.transaction.TransactionType === 'Payment') {
+    if (tx.transaction.Destination !== address) {
+      console.log('Not the destination of this payment.');
+      return;
+    }
+    if (typeof tx.meta.delivered_amount === 'string') {
+      const amount_in_drops = new Big(tx.meta.delivered_amount);
+      const xrp_amount = amount_in_drops.div(1e6);
+      console.log('Received ' + xrp_amount.toString() + ' XRP.');
+      return {
+        received: true,
+        xrp_amount: xrp_amount.toString(),
+      };
+    } else {
+      console.log('Received non-XRP currency.');
+      return;
+    }
+  } else if (
+    [
+      'CheckCash',
+      'EscrowFinish',
+      'OfferCreate',
+      'PaymentChannelClaim',
+      'PaymentChannelFund',
+    ].includes(tx.transaction.TransactionType)
+  ) {
+    countXRPDifference(tx.meta.AffectedNodes, address);
+  } else {
+    console.log(
+      'Not a currency-delivering transaction type (' +
+        tx.transaction.TransactionType +
+        ').',
+    );
+  }
 };
-
-// export const getTransactionHistory = async (
-//   client: Client,
-//   wallet: Wallet,
-//   limit: number = 10,
-// ): Promise<null | TransactionHistoryResponse> => {
-//   let marker;
-
-//   try {
-//     const payload: TransactionHistoryPayload = {
-//       account: wallet.address,
-//       command: 'account_tx',
-//       limit,
-//     };
-
-//     if (marker) {
-//       payload.marker = marker;
-//     }
-
-//     const { result } = await client.request(payload);
-//     const { marker: nextMarker, transactions } = result;
-
-//     const values = transactions.map((transaction) => {
-//       const { meta, tx } = transaction;
-//       return {
-//         Account: tx.Account,
-//         Amount: tx.Amount,
-//         Destination: tx.Destination,
-//         Fee: tx.Fee,
-//         Hash: tx.hash,
-//         result: meta?.TransactionResult,
-//         TransactionType: tx.TransactionType,
-//       };
-//     });
-
-//     const loadMore = !!nextMarker;
-
-//     return {
-//       loadMore: !!nextMarker,
-      
-//     }
-//   } catch (error) {
-//     console.error('Error getting transaction history', error);
-//     return null;
-//   }
-// };
