@@ -1,12 +1,13 @@
-import { Button, Checkbox, DialogFooter, Input } from '@/components/ui';
+import { Button, Checkbox, Input } from '@/components/ui';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui';
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -15,32 +16,37 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { useLedger } from '@/hooks/use-ledger';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { toUIError } from '@/lib/error';
 import { buildAmount } from '@/lib/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ChevronLeftIcon, SendIcon } from 'lucide-react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { isValidAddress } from 'xrpl';
 import * as z from 'zod';
 
-const formSchema = z.object({
-  // Parse the string to a number
-  amount: z.string().refine((v) => {
-    const parsed = Number(v);
-    return !isNaN(parsed) && parsed > 0;
-  }),
-  confirm: z.boolean().refine((v) => v === true, {
-    message: 'You must confirm the transaction',
-  }),
-  recipient: z.string().refine((v) => {
-    return isValidAddress(v);
-  }, 'Invalid address'),
-});
-
-export default function SendDialog() {
+export default function SendDialog({
+  accountExists,
+  address,
+}: {
+  accountExists: boolean;
+  address: string;
+}) {
   const { sendPayment } = useLedger();
-  const { accountExists } = useWalletDetails();
+
+  const formSchema = useMemo(() => {
+    return z.object({
+      // Parse the string to a number
+      amount: z.string().refine((v) => {
+        const parsed = Number(v);
+        return !isNaN(parsed) && parsed > 0;
+      }),
+      confirm: z.boolean().refine((v) => v === true),
+      recipient: z.string().refine((v) => isValidAddress(v) && v !== address),
+    });
+  }, [address]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -53,17 +59,21 @@ export default function SendDialog() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      // TODO: Loading state
-      const response = await sendPayment({
-        amount: buildAmount(values.amount),
-        destination: values.recipient,
-      });
+    const promise = sendPayment({
+      amount: buildAmount(values.amount),
+      destination: values.recipient,
+    });
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    toast.promise(promise, {
+      error: (error) => {
+        const uiError = toUIError(error);
+        return uiError.message;
+      },
+      loading: 'Sending transaction...',
+      success: 'Transaction sent!',
+    });
+
+    form.reset();
   };
 
   return (
