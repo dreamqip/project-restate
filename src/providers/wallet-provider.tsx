@@ -1,5 +1,8 @@
 'use client';
 
+import { useMnemonics } from '@/hooks/use-mnemonics';
+import { getMnemonics, removeMnemonics } from '@/lib/mnemonics';
+import { getWallet, removeWallet } from '@/lib/wallet';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -8,8 +11,6 @@ import {
   useState,
 } from 'react';
 import { Wallet as xrplWallet } from 'xrpl';
-
-import { getWallet } from '../lib/wallet';
 
 type WalletContextType = {
   setWallet: (wallet: xrplWallet) => void;
@@ -24,34 +25,52 @@ export const WalletContext = createContext<undefined | WalletContextType>(
 
 export function WalletProvider({ children }: PropsWithChildren) {
   const router = useRouter();
+  const { setMnemonics } = useMnemonics();
   const [wallet, setWallet] = useState<undefined | xrplWallet>(undefined);
 
-  const signIn = useCallback((password: string) => {
-    const walletFromStorage = getWallet(password);
-    if (!walletFromStorage) {
-      return;
-    }
+  const signIn = useCallback(
+    (password: string) => {
+      const walletFromStorage = getWallet(password);
+      if (!walletFromStorage) {
+        return;
+      }
 
-    if (walletFromStorage.seed) {
-      const wallet = xrplWallet.fromSeed(walletFromStorage.seed);
+      // Get mnemonics from storage and set it to context
+      const mnemonics = getMnemonics(password);
+
+      if (mnemonics) {
+        setMnemonics(mnemonics.split(' '));
+      }
+
+      if (walletFromStorage.seed) {
+        const wallet = xrplWallet.fromSeed(walletFromStorage.seed);
+        setWallet(wallet);
+        console.log('wallet instance', wallet);
+        return;
+      }
+
+      const wallet = new xrplWallet(
+        walletFromStorage.publicKey,
+        walletFromStorage.privateKey,
+      );
       setWallet(wallet);
+
       console.log('wallet instance', wallet);
-      return;
-    }
-
-    const wallet = new xrplWallet(
-      walletFromStorage.publicKey,
-      walletFromStorage.privateKey,
-    );
-    setWallet(wallet);
-
-    console.log('wallet instance', wallet);
-  }, []);
+    },
+    [setMnemonics],
+  );
 
   const signOut = useCallback(() => {
+    // Clear mnemonics and wallet from context
     setWallet(undefined);
+    setMnemonics([]);
+
+    // Clear mnemonics and wallet from storage
+    removeWallet();
+    removeMnemonics();
+
     router.push('/wallet/import');
-  }, [router]);
+  }, [router, setMnemonics]);
 
   return (
     <WalletContext.Provider
