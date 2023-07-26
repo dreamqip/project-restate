@@ -14,7 +14,8 @@ export const formatDate = (unixTimestamp: number): string => {
 export const getTimeZoneString = (unixTimestamp: number): string => {
   const date = dayjs.unix(unixTimestamp);
   const timeZoneOffset = date.utcOffset() / 60;
-  const timeZoneString = timeZoneOffset >= 0 ? `+${timeZoneOffset}` : timeZoneOffset.toString();
+  const timeZoneString =
+    timeZoneOffset >= 0 ? `+${timeZoneOffset}` : timeZoneOffset.toString();
   return `UTC ${timeZoneString}`;
 };
 
@@ -27,4 +28,8 @@ export function mnemonicsToSeed(
   const entropy = encoder.encode(mnemonics).slice(0, 16);
 
   return encodeSeed(Buffer.from(entropy), type);
+}
+
+export function padWithLeadingZeros(num: number, totalLength: number) {
+  return String(num).padStart(totalLength, '0');
 }
