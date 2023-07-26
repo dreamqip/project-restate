@@ -3,19 +3,25 @@ import * as React from 'react';
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
+  containerClassName?: string;
   prefixIcon?: React.ReactNode;
   suffixIcon?: React.ReactNode;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, prefixIcon, suffixIcon, type, ...props }, ref) => {
+  (
+    { className, containerClassName, prefixIcon, suffixIcon, type, ...props },
+    ref,
+  ) => {
     return (
       <div
         className={cn(
           'flex max-w-full items-center gap-x-4 rounded-md bg-background px-4 py-2 text-lg ring-1 ring-foreground transition-shadow focus-within:ring-2 focus-within:ring-foreground',
           {
-            'ring-error focus-within:ring-error text-error': props['aria-invalid'] === true,
+            'text-error ring-error focus-within:ring-error':
+              props['aria-invalid'] === true,
           },
+          containerClassName,
         )}
       >
         <input

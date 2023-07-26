@@ -1,8 +1,12 @@
 const path = require('path');
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   webpack: (
     config,
     { buildId, defaultLoaders, dev, isServer, nextRuntime, webpack },
@@ -26,6 +30,11 @@ const nextConfig = {
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser',
       }),
+      new webpack.IgnorePlugin({
+        checkResource(resource) {
+          return /.*\/wordlists\/(?!english).*\.json/.test(resource);
+        },
+      }),
     ]);
 
     const aliases = config.resolve.alias || {};
@@ -43,4 +52,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
