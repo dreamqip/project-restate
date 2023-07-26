@@ -31,12 +31,13 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
   const { acceptNFTOffer } = useLedger();
 
   const { nftSellOffers } = useNftSellOffers();
+  const lastOffer = nftSellOffers[nftSellOffers.length - 1];
 
   const onSubmit = async () => {
     //TODO: add loader
     try {
       const response = await acceptNFTOffer({
-        NFTokenSellOffer: nftSellOffers[nftSellOffers.length - 1],
+        NFTokenSellOffer: lastOffer.nft_offer_index,
       });
 
       console.log(response);

@@ -30,12 +30,13 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   const { cancelNFTOffer } = useLedger();
 
   const { nftSellOffers } = useNftSellOffers();
+  const lastOffer = nftSellOffers[nftSellOffers.length - 1];
 
   const onSubmit = async () => {
     //TODO: add loader
     try {
       const response = await cancelNFTOffer({
-        NFTokenOffers: [nftSellOffers[nftSellOffers.length - 1]],
+        NFTokenOffers: [lastOffer.nft_offer_index],
       });
 
       console.log(response);

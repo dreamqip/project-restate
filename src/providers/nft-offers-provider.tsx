@@ -1,9 +1,11 @@
+import type { NFTOffer } from 'xrpl';
+
 import { useWalletDetails } from '@/hooks/use-wallet-details';
 import { useXRPLClient } from '@/hooks/use-xrpl-client';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export const NftSellOffersContext = createContext<{
-  nftSellOffers: string[];
+  nftSellOffers: NFTOffer[];
   refetch: () => void;
 }>({
   nftSellOffers: [],
@@ -17,7 +19,7 @@ export function NftSellOffersProvider({
   children: React.ReactNode;
   nftId: string | undefined;
 }) {
-  const [nftSellOffers, setNftSellOffers] = useState<string[]>([]);
+  const [nftSellOffers, setNftSellOffers] = useState<NFTOffer[]>([]);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const { client } = useXRPLClient();
@@ -31,9 +33,7 @@ export function NftSellOffersProvider({
           nft_id: nftId!,
         });
         console.log(response);
-        setNftSellOffers(
-          response.result.offers.map((offer) => offer.nft_offer_index),
-        );
+        setNftSellOffers(response.result.offers);
       } catch (err) {
         console.error(err);
       }
