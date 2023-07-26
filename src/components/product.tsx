@@ -7,6 +7,8 @@ import CreateOfferModal from '@/components/create-offer-modal';
 import MintNftModal from '@/components/mint-nft-modal';
 import ProductGallery from '@/components/product-gallery';
 import Warranty from '@/components/warranty';
+import { useNftSellOffers } from '@/hooks/use-nft-offers';
+import { useNftOwner } from '@/hooks/use-nft-owner';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -15,6 +17,9 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
+  const { isOwner } = useNftOwner();
+  const { sellOffers } = useNftSellOffers();
+
   return (
     <div className='grid gap-8'>
       <div className='max-w-sm'>
@@ -29,24 +34,16 @@ export default function Product({ product }: ProductProps) {
       <ProductGallery images={product.images} />
       <div className='max-w-sm'>
         <MintNftModal product={product} />
-        <CreateOfferModal product={product} />
-        <CancelOfferModal product={product} />
-        <AcceptOfferModal product={MARKUP_PRODUCT} />
-        {/* {nftOwner === accountAddress?.address ? (
-          nftSellOffers.length > 1 ? (
-            <CreateOfferModal product={MARKUP_PRODUCT} />
+        {sellOffers.length ? (
+          isOwner ? (
+            <CancelOfferModal product={product} />
           ) : (
-            <CancelOfferModal
-              nftSellOffers={nftSellOffers}
-              product={MARKUP_PRODUCT}
-            />
+            <AcceptOfferModal product={MARKUP_PRODUCT} />
           )
         ) : (
-          <AcceptOfferModal
-            nftSellOffers={nftSellOffers}
-            product={MARKUP_PRODUCT}
-          />
-        )} */}
+          isOwner && <CreateOfferModal product={product} />
+        )}
+
         <div className='grid gap-8'>
           {/* Warranties */}
           <Warranty warranty={product.warranties[0]} />

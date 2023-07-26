@@ -2,7 +2,7 @@
 
 import { MARKUP_PRODUCT } from '@/app/marketplace/test-product';
 import ProductPage from '@/components/product';
-import { NftSellOffersProvider } from '@/providers/nft-offers-provider';
+import { NftsProvider } from '@/providers/nfts-provider';
 import { useParams } from 'next/navigation';
 
 export default function Page() {
@@ -10,8 +10,8 @@ export default function Page() {
   // get here product by nftId and pass it down
 
   return (
-    <NftSellOffersProvider nftId={nftId}>
+    <NftsProvider nftId={nftId}>
       <ProductPage product={MARKUP_PRODUCT} />
-    </NftSellOffersProvider>
+    </NftsProvider>
   );
 }

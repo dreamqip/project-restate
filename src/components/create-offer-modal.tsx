@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/form';
 import { useLedger } from '@/hooks/use-ledger';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { useWallet } from '@/hooks/use-wallet';
 import { buildAmount } from '@/lib/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogClose } from '@radix-ui/react-dialog';
@@ -33,9 +33,9 @@ interface CreateOfferModalProps {
 }
 export default function CreateOfferModal({ product }: CreateOfferModalProps) {
   const { createNFTOffer } = useLedger();
-  const { accountExists } = useWalletDetails();
+  const { wallet } = useWallet();
 
-  const { refetchNftSellOffers } = useNftSellOffers();
+  const { refetchSellOffers } = useNftSellOffers();
 
   const formSchema = z.object({
     amount: z.string().nonempty(),
@@ -59,7 +59,7 @@ export default function CreateOfferModal({ product }: CreateOfferModalProps) {
         NFTokenID: product.nftId,
       });
 
-      refetchNftSellOffers();
+      refetchSellOffers();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -69,7 +69,7 @@ export default function CreateOfferModal({ product }: CreateOfferModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!accountExists}>
+        <Button className='mb-8 w-full' disabled={!wallet}>
           Create an offer
         </Button>
       </DialogTrigger>

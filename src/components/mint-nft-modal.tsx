@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui';
 import { useLedger } from '@/hooks/use-ledger';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { useWallet } from '@/hooks/use-wallet';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ChevronLeftIcon } from 'lucide-react';
 
@@ -22,7 +22,7 @@ interface MintNftModalProps {
 }
 export default function MintNftModal({ product }: MintNftModalProps) {
   const { mintNFT } = useLedger();
-  const { accountExists } = useWalletDetails();
+  const { wallet } = useWallet();
 
   const onSubmit = async () => {
     //TODO: add loader
@@ -41,7 +41,7 @@ export default function MintNftModal({ product }: MintNftModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!accountExists}>
+        <Button className='mb-8 w-full' disabled={!wallet}>
           Mint NFT
         </Button>
       </DialogTrigger>

@@ -2,9 +2,11 @@
 
 import type { Product } from '@/app/marketplace/test-product';
 
+import { useAccountNfts } from '@/hooks/use-account-nfts';
 import { useLedger } from '@/hooks/use-ledger';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { useWallet } from '@/hooks/use-wallet';
+import { formatAmount } from '@/lib/format';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Label } from '@radix-ui/react-label';
 import { ChevronLeftIcon } from 'lucide-react';
@@ -27,11 +29,12 @@ interface AcceptOfferModalProps {
 }
 export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
   const [isChecked, setIsChecked] = useState(false);
-  const { accountExists } = useWalletDetails();
+  const { wallet } = useWallet();
   const { acceptNFTOffer } = useLedger();
 
-  const { nftSellOffers } = useNftSellOffers();
-  const lastOffer = nftSellOffers[nftSellOffers.length - 1];
+  const { refetchSellOffers, sellOffers } = useNftSellOffers();
+  const { refetchNfts } = useAccountNfts();
+  const lastOffer = sellOffers[sellOffers.length - 1];
 
   const onSubmit = async () => {
     //TODO: add loader
@@ -39,7 +42,8 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
       const response = await acceptNFTOffer({
         NFTokenSellOffer: lastOffer.nft_offer_index,
       });
-
+      refetchNfts();
+      refetchSellOffers();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -49,8 +53,8 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!accountExists}>
-          Accept the offer for {product.price}
+        <Button className='mb-8 w-full' disabled={!wallet}>
+          Accept the offer for {lastOffer && formatAmount(lastOffer.amount)}
         </Button>
       </DialogTrigger>
       <DialogContent className='max-w-sm gap-6 border-none bg-transparent p-4 sm:left-32 sm:top-32 sm:translate-x-0 sm:translate-y-0 sm:p-0'>
@@ -60,7 +64,8 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
             Back to {product.name}
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
-            Accept the offer for <br /> {product.price}
+            Accept the offer for <br />
+            {lastOffer && formatAmount(lastOffer.amount)}
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec

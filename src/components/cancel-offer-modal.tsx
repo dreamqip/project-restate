@@ -16,7 +16,7 @@ import {
 } from '@/components/ui';
 import { useLedger } from '@/hooks/use-ledger';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { useWallet } from '@/hooks/use-wallet';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -26,11 +26,11 @@ interface CancelOfferModalProps {
 }
 export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   const [isChecked, setIsChecked] = useState(false);
-  const { accountExists } = useWalletDetails();
+  const { wallet } = useWallet();
   const { cancelNFTOffer } = useLedger();
 
-  const { nftSellOffers } = useNftSellOffers();
-  const lastOffer = nftSellOffers[nftSellOffers.length - 1];
+  const { refetchSellOffers, sellOffers } = useNftSellOffers();
+  const lastOffer = sellOffers[sellOffers.length - 1];
 
   const onSubmit = async () => {
     //TODO: add loader
@@ -38,7 +38,7 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
       const response = await cancelNFTOffer({
         NFTokenOffers: [lastOffer.nft_offer_index],
       });
-
+      refetchSellOffers();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -48,7 +48,7 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!accountExists}>
+        <Button className='mb-8 w-full' disabled={!wallet}>
           Cancel the offer
         </Button>
       </DialogTrigger>
