@@ -2,14 +2,6 @@
 
 import type { Product } from '@/app/marketplace/test-product';
 
-import { useLedger } from '@/hooks/use-ledger';
-import { useNftSellOffers } from '@/hooks/use-nft-offers';
-import { useWalletDetails } from '@/hooks/use-wallet-details';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { Label } from '@radix-ui/react-label';
-import { ChevronLeftIcon } from 'lucide-react';
-import { useState } from 'react';
-
 import {
   Button,
   Checkbox,
@@ -20,15 +12,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui';
+  Label,
+} from '@/components/ui';
+import { useLedger } from '@/hooks/use-ledger';
+import { useNftSellOffers } from '@/hooks/use-nft-offers';
+import { useWalletDetails } from '@/hooks/use-wallet-details';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { ChevronLeftIcon } from 'lucide-react';
+import { useState } from 'react';
 
-interface AcceptOfferModalProps {
+interface CancelOfferModalProps {
   product: Product;
 }
-export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
+export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   const [isChecked, setIsChecked] = useState(false);
   const { accountExists } = useWalletDetails();
-  const { acceptNFTOffer } = useLedger();
+  const { cancelNFTOffer } = useLedger();
 
   const { nftSellOffers } = useNftSellOffers();
   const lastOffer = nftSellOffers[nftSellOffers.length - 1];
@@ -36,8 +35,8 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
   const onSubmit = async () => {
     //TODO: add loader
     try {
-      const response = await acceptNFTOffer({
-        NFTokenSellOffer: lastOffer.nft_offer_index,
+      const response = await cancelNFTOffer({
+        NFTokenOffers: [lastOffer.nft_offer_index],
       });
 
       console.log(response);
@@ -50,7 +49,7 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button className='mb-8 w-full' disabled={!accountExists}>
-          Accept the offer for {product.price}
+          Cancel the offer
         </Button>
       </DialogTrigger>
       <DialogContent className='max-w-sm gap-6 border-none bg-transparent p-4 sm:left-32 sm:top-32 sm:translate-x-0 sm:translate-y-0 sm:p-0'>
@@ -60,7 +59,7 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
             Back to {product.name}
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
-            Accept the offer for <br /> {product.price}
+            Cancel the offer
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec

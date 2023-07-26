@@ -184,6 +184,13 @@ export interface GetNFTRequest {
   marker?: unknown;
 }
 
+export interface GetTransactionsRequest {
+  // Limit the number of transactions to retrieve.
+  limit?: number;
+  // Value from a previous paginated response. Resume retrieving data where that response left off.
+  marker?: unknown;
+}
+
 export interface SignMessageRequest {
   favicon: null | string | undefined;
   message: string;

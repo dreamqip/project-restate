@@ -2,11 +2,11 @@ import type { Product } from '@/app/marketplace/test-product';
 
 import Image from 'next/image';
 
-interface ProductProps {
+interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: ProductProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className='grid max-w-sm gap-4'>
       <Image

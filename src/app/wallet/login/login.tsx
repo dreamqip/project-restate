@@ -14,6 +14,7 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 const formSchema = z.object({
@@ -48,10 +49,9 @@ export default function Login() {
       router.push('/wallet');
     } catch (error) {
       if (error instanceof Error) {
-        form.control.setError('password', { message: error.message });
+        toast.error('Failed to unlock the wallet. Please try again.');
+        form.setError('password', { message: error.message });
       }
-
-      return;
     }
   };
 

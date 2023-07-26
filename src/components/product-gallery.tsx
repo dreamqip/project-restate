@@ -1,10 +1,9 @@
 'use client';
 
+import { Button } from '@/components/ui';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';
-
-import { Button } from './ui';
 
 interface ProductGalleryProps {
   images: string[];

@@ -1,5 +1,6 @@
 'use client';
 
+import TermsAndPrivacyLinks from '@/components/terms-and-privacy-links';
 import { Button, Checkbox, Input } from '@/components/ui';
 import {
   Form,
@@ -10,10 +11,8 @@ import {
 } from '@/components/ui/form';
 import { useMnemonics } from '@/hooks/use-mnemonics';
 import { useWallet } from '@/hooks/use-wallet';
-import { mnemonicsToSeed } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validateMnemonic } from 'bip39';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Wallet } from 'xrpl';
@@ -22,15 +21,14 @@ import * as z from 'zod';
 const formSchema = z.object({
   mnemonics: z.string().refine((v) => {
     return validateMnemonic(v);
-  }, 'Invalid mnemonics'),
-  terms: z.boolean().refine((v) => v === true, 'Terms must be accepted'),
+  }),
+  terms: z.boolean().refine((v) => v === true),
 });
 
 export default function ImportWallet() {
-  const { mnemonics: mnemonics } = useMnemonics();
-  const { setWallet } = useWallet();
-
   const router = useRouter();
+  const { setWallet } = useWallet();
+  const { setMnemonics } = useMnemonics();
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -41,14 +39,13 @@ export default function ImportWallet() {
     resolver: zodResolver(formSchema),
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    const wallet = Wallet.fromSeed(mnemonicsToSeed(mnemonics.join(' ')));
-    console.log('wallet', wallet);
+    // In future versions of xrpl.js, Wallet.fromMnemonic will be removed.
+    // For that case, we will need to use Wallet.fromSeed(mnemonicsToSeed(values.mnemonics))
+    const wallet = Wallet.fromMnemonic(values.mnemonics);
 
     setWallet(wallet);
+    setMnemonics(values.mnemonics.split(' '));
     router.push('/wallet/set-password');
   }
 
@@ -79,15 +76,9 @@ export default function ImportWallet() {
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
-              <FormLabel className='leading-none'>
-                By creating a new wallet, you agree with Restate&apos;s{' '}
-                <Link className='text-cyan' href='/terms'>
-                  Terms and Conditions
-                </Link>{' '}
-                and{' '}
-                <Link className='text-cyan' href='/privacy'>
-                  Privacy Policy
-                </Link>
+              <FormLabel className='font-normal leading-none'>
+                By importing an existing wallet, you agree with Restate&apos;s{' '}
+                <TermsAndPrivacyLinks />
               </FormLabel>
             </FormItem>
           )}

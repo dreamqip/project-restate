@@ -1,8 +1,11 @@
 import type { Memo, Signer } from '@/types';
 import type {
+  Amount,
   Memo as XRPLMemo,
   Signer as XRPLSigner,
 } from 'xrpl/dist/npm/models/common';
+
+import { xrpToDrops } from 'xrpl';
 
 export const toXRPLMemos = (
   memos: Memo[] | undefined,
@@ -32,4 +35,18 @@ export const toXRPLSigners = (
       },
     };
   });
+};
+
+export const buildAmount = (
+  value: string,
+  currency?: string | undefined,
+  issuer?: string | undefined,
+): Amount | string => {
+  return currency && issuer
+    ? {
+        currency,
+        issuer,
+        value,
+      }
+    : xrpToDrops(value);
 };

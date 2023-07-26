@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, type PropsWithChildren } from 'react';
+import { createContext, type PropsWithChildren, useState } from 'react';
 
 type MnenomicsContextType = {
   mnemonics: string[];
@@ -11,16 +11,9 @@ export const MnemonicsContext = createContext<MnenomicsContextType | undefined>(
   undefined,
 );
 
-type MnemonicsProviderProps = PropsWithChildren & {
-  mnemonics: string[];
-  setMnemonics: (mnemonics: string[]) => void;
-};
+export function MnemonicsProvider({ children }: PropsWithChildren) {
+  const [mnemonics, setMnemonics] = useState<string[]>([]);
 
-export function MnemonicsProvider({
-  children,
-  mnemonics: mnemonics,
-  setMnemonics: setMnemonics,
-}: MnemonicsProviderProps) {
   return (
     <MnemonicsContext.Provider
       value={{ mnemonics: mnemonics, setMnemonics: setMnemonics }}
