@@ -11,32 +11,31 @@ import {
 } from '@/components/ui/form';
 import { useMnemonics } from '@/hooks/use-mnemonics';
 import { useWallet } from '@/hooks/use-wallet';
-import { mnemonicsToSeed } from '@/lib/utils';
+import { mnemonicsToSeed, randomInRange } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Wallet } from 'xrpl';
 import * as z from 'zod';
 
-// Generate random number in range
-function randomInRange(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 export default function VerifyMnemonics() {
   const router = useRouter();
 
-  const { mnemonics } = useMnemonics();
   const { setWallet } = useWallet();
+  const { mnemonics } = useMnemonics();
 
   const [randomMnemonicIndex, setRandomMnemonicIndex] = useState<number>(0);
 
   // Set random mnemonic index on first client render
-  useEffect(() => {
+  useEffect(() => {    
+    // If there are no mnemonics, redirect to create wallet page
+    if (!mnemonics.length) {
+      router.replace('/wallet/create');
+    }
+
     setRandomMnemonicIndex(randomInRange(0, 11));
-  }, []);
+  }, [mnemonics, router]);
 
   // Wrap the form schema in useMemo to avoid re-creating it on every render.
   const formSchema = useMemo(() => {
@@ -56,7 +55,6 @@ export default function VerifyMnemonics() {
     resolver: zodResolver(formSchema),
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     const wallet = Wallet.fromSeed(mnemonicsToSeed(mnemonics.join(' ')));
 
