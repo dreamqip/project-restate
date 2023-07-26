@@ -1,7 +1,7 @@
 import type { AccountRoot, SignerList } from 'xrpl/dist/npm/models/ledger';
 
 import { getWalletDetails } from '@/lib/xrpl';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { dropsToXrp } from 'xrpl';
 
 import { useIsConnected } from './use-is-connected';
@@ -13,7 +13,7 @@ type XRPLAddress = {
   xAddress: string;
 };
 
-export function useWalletDetails() {
+export function useWalletDetails(refetch: boolean = false) {
   const { client } = useXRPLClient();
   const { wallet } = useWallet();
   const isConnected = useIsConnected();
@@ -30,34 +30,40 @@ export function useWalletDetails() {
     undefined,
   );
 
-  useEffect(() => {
-    const getBalance = async () => {
-      if (!client || !isConnected || !wallet) {
-        return;
-      }
+  const getBalance = useCallback(async () => {
+    if (!client || !isConnected || !wallet) {
+      return;
+    }
 
-      const walletDetails = await getWalletDetails(client, wallet);
+    const walletDetails = await getWalletDetails(client, wallet);
 
-      if (!walletDetails) {
-        setAccountExists(false);
-        return;
-      }
+    if (!walletDetails) {
+      setAccountExists(false);
+      return;
+    }
 
-      const { accountData, accountReserves, address, xAddress } = walletDetails;
+    const { accountData, accountReserves, address, xAddress } = walletDetails;
 
-      setAccountExists(true);
-      setAccountAddress({
-        address,
-        xAddress,
-      });
-      setAccountData(accountData);
-      setAccountReserves(accountReserves);
-      // Convert the balance from drops to XRP.
-      setBalance(dropsToXrp(accountData.Balance));
-    };
-
-    getBalance();
+    setAccountExists(true);
+    setAccountAddress({
+      address,
+      xAddress,
+    });
+    setAccountData(accountData);
+    setAccountReserves(accountReserves);
+    // Convert the balance from drops to XRP.
+    setBalance(dropsToXrp(accountData.Balance));
   }, [client, isConnected, wallet]);
+
+  useEffect(() => {
+    getBalance();
+  }, [getBalance]);
+
+  useEffect(() => {
+    if (refetch) {
+      getBalance();
+    }
+  }, [client, isConnected, wallet, refetch, getBalance]);
 
   return {
     accountAddress,
