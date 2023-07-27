@@ -1,6 +1,7 @@
 'use client';
 
 import NavLink from '@/components/nav-link';
+import { useWallet } from '@/hooks/use-wallet';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -15,6 +16,7 @@ const PATHS_WITHOUT_LINKS = [
 
 export default function Header() {
   const path = usePathname();
+  const { wallet } = useWallet();
 
   return (
     <header className='mb-16 px-4 pt-4 sm:px-32 sm:pt-32'>
@@ -33,9 +35,11 @@ export default function Header() {
             <li className='transition-colors hover:text-foreground'>
               <NavLink href='/wallet'>03 XRPL Wallet</NavLink>
             </li>
-            <li className='transition-colors hover:text-foreground'>
-              <NavLink href='/wallet/settings'>04 Settings</NavLink>
-            </li>
+            {wallet ? (
+              <li className='transition-colors hover:text-foreground'>
+                <NavLink href='/wallet/settings'>04 Settings</NavLink>
+              </li>
+            ) : null}
           </ul>
         )}
       </nav>
