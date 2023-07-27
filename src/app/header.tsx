@@ -1,3 +1,4 @@
+import NavLink from '@/components/nav-link';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,17 +10,17 @@ export default function Header() {
           <Image alt='asset image' height={27} src='/logo.svg' width={154} />
         </Link>
         <ul className='mt-6 flex flex-wrap gap-x-4 whitespace-nowrap text-lg font-medium text-accents-3'>
-          <li>
-            <Link href='/marketplace/offers'>01 Offers</Link>
+          <li className='transition-colors hover:text-foreground'>
+            <NavLink href='/marketplace/offers'>01 Offers</NavLink>
           </li>
-          <li>
-            <Link href='/marketplace/portfolio'>02 Portfolio</Link>
+          <li className='transition-colors hover:text-foreground'>
+            <NavLink href='/marketplace/portfolio'>02 Portfolio</NavLink>
           </li>
-          <li>
-            <Link href='/wallet'>03 XRPL Wallet</Link>
+          <li className='transition-colors hover:text-foreground'>
+            <NavLink href='/wallet'>03 XRPL Wallet</NavLink>
           </li>
-          <li>
-            <Link href='/wallet/settings'>04 Settings</Link>
+          <li className='transition-colors hover:text-foreground'>
+            <NavLink href='/wallet/settings'>04 Settings</NavLink>
           </li>
         </ul>
       </nav>
