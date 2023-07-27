@@ -7,10 +7,10 @@ import { usePathname } from 'next/navigation';
 
 const PATHS_WITHOUT_LINKS = [
   '/wallet/create',
-  'wallet/verify',
+  '/wallet/verify',
   '/wallet/import',
   '/wallet/set-password',
-  'wallet/login',
+  '/wallet/login',
 ];
 
 export default function Header() {
