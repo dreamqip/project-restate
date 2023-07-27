@@ -6,6 +6,18 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: 's3.us-west-2.amazonaws.com',
+        protocol: 'https',
+      },
+      {
+        hostname: 'picsum.photos',
+        protocol: 'https',
+      }
+    ],
+  },
   reactStrictMode: true,
   webpack: (
     config,

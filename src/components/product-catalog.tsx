@@ -1,18 +1,18 @@
 'use client';
 
-import { type Product } from '@/app/marketplace/test-product';
+import type { Asset } from '@/types/notion';
+
 import ProductCard from '@/components/product-card';
 import Link from 'next/link';
-import React from 'react';
 
 interface ProductCatalogProps {
+  assets: Asset[];
   content: string;
-  products: Product[];
 }
 
 export default function ProductCatalog({
+  assets,
   content,
-  products,
 }: ProductCatalogProps) {
   return (
     <div>
@@ -25,16 +25,12 @@ export default function ProductCatalog({
       </div>
       <div className='grid max-w-max gap-8 xl:grid-cols-2	2xl:grid-cols-3'>
         {/* Products */}
-        {products.map((product, index) => (
+        {assets.map((asset, index) => (
           <Link
-            href={
-              content === 'Offers'
-                ? `offers/${product.nftId}`
-                : `portfolio/${product.nftId}`
-            }
+            href={content === 'Offers' ? `offers/${123}` : `portfolio/${123}`}
             key={index}
           >
-            <ProductCard product={product} />
+            <ProductCard asset={asset} />
           </Link>
         ))}
       </div>
