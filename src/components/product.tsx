@@ -12,10 +12,11 @@ import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface ProductProps {
+  categoryType: 'Offers' | 'Portfolio';
   product: ProductType;
 }
 
-export default function Product({ product }: ProductProps) {
+export default function Product({ categoryType, product }: ProductProps) {
   const { isOwner } = useNftOwner();
   const { sellOffers } = useNftSellOffers();
 
@@ -25,7 +26,7 @@ export default function Product({ product }: ProductProps) {
         {/* Product name & tagline */}
         <Link className='mb-2 flex items-center text-accents-3' href='./'>
           <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-          Back
+          Back to {categoryType}
         </Link>
         <h1 className='mb-3 text-3xl font-bold'>{product.name}</h1>
         <p>{product.tagline}</p>
