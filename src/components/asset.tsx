@@ -11,11 +11,7 @@ import { useNftOwner } from '@/hooks/use-nft-owner';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
-interface AssetProps {
-  product: ProductType;
-}
-
-export default function Asset({ product }: AssetProps) {
+export default function Asset({ asset }: { asset: ProductType }) {
   const { isOwner } = useNftOwner();
   const { sellOffers } = useNftSellOffers();
 
@@ -27,25 +23,25 @@ export default function Asset({ product }: AssetProps) {
           <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
           Back
         </Link>
-        <h1 className='mb-3 text-3xl font-bold'>{product.name}</h1>
-        <p>{product.tagline}</p>
+        <h1 className='mb-3 text-3xl font-bold'>{asset.name}</h1>
+        <p>{asset.tagline}</p>
       </div>
-      <AssetGallery images={product.images} />
+      <AssetGallery images={asset.images} />
       <div className='max-w-sm'>
         {sellOffers.length ? (
           isOwner ? (
-            <CancelOfferModal product={product} />
+            <CancelOfferModal product={asset} />
           ) : (
             <AcceptOfferModal product={MARKUP_PRODUCT} />
           )
         ) : (
-          isOwner && <CreateOfferModal product={product} />
+          isOwner && <CreateOfferModal product={asset} />
         )}
 
         <div className='grid gap-8'>
           {/* Warranties */}
-          <Warranty warranty={product.warranties[0]} />
-          <Warranty warranty={product.warranties[0]} />
+          <Warranty warranty={asset.warranties[0]} />
+          <Warranty warranty={asset.warranties[0]} />
         </div>
       </div>
     </div>
