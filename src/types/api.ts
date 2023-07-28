@@ -1,7 +1,14 @@
-import type { Asset } from "./notion";
+import type { Asset, Offer } from './notion';
+
+type PaginationBase = {
+  cursor?: string;
+  pageSize?: number;
+};
 
 export type AssetsResponse = {
   assets: Asset[];
-  hasMore: boolean;
-  nextCursor: null | string;
-};
+} & PaginationBase;
+
+export type OfferResponse = {
+  offers: Offer[];
+} & PaginationBase;

@@ -1,13 +1,31 @@
-import type { AssetsResponse } from '@/types/api';
+import type { OfferResponse } from '@/types/api';
 
-export async function getAssets() {
+export async function getOffers(
+  pageSize?: number,
+  cursor?: string,
+): Promise<OfferResponse | undefined> {
   // We cannot use relative paths here because this code will be executed on the server side
-  const response = await fetch(`${process.env.HOST}/api/assets`);
+  const url = new URL('/api/offers', process.env.HOST);
+
+  if (pageSize) {
+    url.searchParams.append('pageSize', pageSize.toString());
+  }
+
+  if (cursor) {
+    url.searchParams.append('cursor', cursor);
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  });
 
   // Do something more useful with the response
   if (!response.ok) {
     return;
   }
 
-  return (await response.json()) as AssetsResponse;
+  return (await response.json()) as OfferResponse;
 }
