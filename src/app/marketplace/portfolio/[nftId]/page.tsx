@@ -1,7 +1,7 @@
 'use client';
 
 import { MARKUP_PRODUCT } from '@/app/marketplace/test-product';
-import ProductPage from '@/components/product';
+import AssetPage from '@/components/asset';
 import { NftsProvider } from '@/providers/nfts-provider';
 import { useParams } from 'next/navigation';
 
@@ -11,7 +11,7 @@ export default function Page() {
 
   return (
     <NftsProvider nftId={nftId}>
-      <ProductPage product={MARKUP_PRODUCT} />
+      <AssetPage product={MARKUP_PRODUCT} />
     </NftsProvider>
   );
 }

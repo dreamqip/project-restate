@@ -2,18 +2,15 @@
 
 import type { Asset } from '@/types/notion';
 
-import ProductCard from '@/components/product-card';
+import AssetCard from '@/components/asset-card';
 import Link from 'next/link';
 
-interface ProductCatalogProps {
+interface AssetCatalogProps {
   assets: Asset[];
   content: string;
 }
 
-export default function ProductCatalog({
-  assets,
-  content,
-}: ProductCatalogProps) {
+export default function AssetCatalog({ assets, content }: AssetCatalogProps) {
   return (
     <div>
       <div className='mb-8'>
@@ -30,7 +27,7 @@ export default function ProductCatalog({
             href={content === 'Offers' ? `offers/${123}` : `portfolio/${123}`}
             key={index}
           >
-            <ProductCard asset={asset} />
+            <AssetCard asset={asset} />
           </Link>
         ))}
       </div>

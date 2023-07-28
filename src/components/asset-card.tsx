@@ -2,7 +2,7 @@ import type { Asset } from '@/types/notion';
 
 import Image from 'next/image';
 
-export default function ProductCard({ asset }: { asset: Asset }) {
+export default function AssetCard({ asset }: { asset: Asset }) {
   return (
     <div className='grid max-w-sm gap-4'>
       <Image

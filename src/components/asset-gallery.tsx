@@ -5,11 +5,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-interface ProductGalleryProps {
+interface AssetGalleryProps {
   images: string[];
 }
 
-export default function ProductGallery({ images }: ProductGalleryProps) {
+export default function AssetGallery({ images }: AssetGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = () => {
