@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 import { isValidAddress } from 'xrpl';
 import * as z from 'zod';
 
-export default function SendDialog({
+export default function SendModal({
   accountExists,
   address,
 }: {

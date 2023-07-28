@@ -15,7 +15,7 @@ import { CopyIcon } from 'lucide-react';
 import { useId, useState } from 'react';
 import { toast } from 'sonner';
 
-import RevealDialog from './reveal-dialog';
+import RevealModal from './reveal-modal';
 
 export default function Settings() {
   const { signOut } = useWallet();
@@ -98,7 +98,7 @@ export default function Settings() {
               >
                 Copy
               </Button>
-              <RevealDialog />
+              <RevealModal />
             </div>
           </AccordionContent>
         </AccordionItem>

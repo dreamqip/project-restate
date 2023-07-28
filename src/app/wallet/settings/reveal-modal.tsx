@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -28,7 +28,7 @@ const formSchema = z.object({
   securityTerms: z.boolean().refine((v) => v === true),
 });
 
-export default function RevealDialog() {
+export default function RevealModal() {
   const { signIn } = useWallet();
 
   const form = useForm<z.infer<typeof formSchema>>({
