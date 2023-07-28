@@ -1,9 +1,11 @@
+import type { FullOffer, Offer } from '@/types/notion';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 import {
   APIErrorCode,
   Client,
   ClientErrorCode,
+  isFullPage,
   isNotionClientError,
   LogLevel,
   type NotionClientError,
@@ -69,13 +71,18 @@ export function extractPropertyItemValueToString(
     case 'files':
       if (!property.files.length) {
         return '';
-      } else if (property.files[0].type === 'external') {
-        return property.files[0].external.url;
-      } else if (property.files[0].type === 'file') {
-        return property.files[0].file.url;
       } else {
-        return assertUnreachable();
+        return property.files
+          .map((file) => {
+            if (file.type === 'external') {
+              return file.external.url;
+            }
+
+            return file.type === 'file' ? file.file.url : '';
+          })
+          .join(', ');
       }
+
     case 'status':
       return property.status?.name ?? '';
   }
@@ -126,16 +133,105 @@ const errorToUIError = (error: NotionClientError) => {
   }
 };
 
-export async function getAssetsFullPageOrPartial(
-  pageSize: number,
-  cursor?: string,
-) {
+export async function getOffers(pageSize: number, cursor?: string) {
   try {
-    return await notion.databases.query({
+    const rawData = await notion.databases.query({
       database_id: databaseId,
+      // Filter out pages that are not have price and nfId
+      filter: {
+        and: [
+          {
+            number: {
+              is_not_empty: true,
+            },
+            property: 'Price',
+          },
+          {
+            property: 'ID',
+            title: {
+              is_not_empty: true,
+            },
+          },
+        ],
+      },
       page_size: pageSize,
       start_cursor: cursor,
     });
+
+    const offers: Offer[] = [];
+
+    for (const page of rawData.results) {
+      // @ts-expect-error
+      if (!isFullPage(page)) {
+        continue;
+      }
+
+      const { properties } = page;
+
+      const offer: Offer = {
+        // Images would be as string separated by comma, so we need to split it and take the first one
+        image: extractPropertyItemValueToString(properties.Images).split(
+          ',',
+        )[0],
+        nftId: extractPropertyItemValueToString(properties.ID),
+        price: extractPropertyItemValueToString(properties.Price),
+        subtitle: extractPropertyItemValueToString(properties.Subtitle),
+        title: extractPropertyItemValueToString(properties.Title),
+      };
+
+      offers.push(offer);
+    }
+
+    return {
+      hasMore: rawData.has_more,
+      nextCursor: rawData.next_cursor,
+      offers,
+    };
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      return errorToUIError(error);
+    }
+
+    throw error;
+  }
+}
+
+export async function getOfferById(nftId: string) {
+  try {
+    const rawData = await notion.databases.query({
+      database_id: databaseId,
+      filter: {
+        property: 'ID',
+        title: {
+          equals: nftId,
+        },
+      },
+    });
+
+    const page = rawData.results[0];
+
+    if (!page) {
+      throw new NotionError('Offer not found.', 404);
+    }
+
+    // @ts-expect-error
+    if (!isFullPage(page)) {
+      throw new NotionError('Offer not found.', 404);
+    }
+
+    const { properties } = page;
+
+    const offer: FullOffer = {
+      images: extractPropertyItemValueToString(properties.Images)
+        .split(',')
+        .map((image) => image.trim()),
+      nftId: extractPropertyItemValueToString(properties.ID),
+      price: extractPropertyItemValueToString(properties.Price),
+      subtitle: extractPropertyItemValueToString(properties.Subtitle),
+      title: extractPropertyItemValueToString(properties.Title),
+    };
+
+    return offer;
   } catch (error) {
     if (isNotionClientError(error)) {
       return errorToUIError(error);
