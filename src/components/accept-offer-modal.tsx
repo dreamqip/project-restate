@@ -6,11 +6,13 @@ import { useAccountNfts } from '@/hooks/use-account-nfts';
 import { useLedger } from '@/hooks/use-ledger';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useWallet } from '@/hooks/use-wallet';
+import { toUIError } from '@/lib/error';
 import { formatAmount } from '@/lib/format';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Label } from '@radix-ui/react-label';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -25,7 +27,9 @@ import {
 } from './ui';
 
 export default function AcceptOfferModal({ asset }: { asset: FullAsset }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
   const { wallet } = useWallet();
   const { acceptNFTOffer } = useLedger();
 
@@ -34,17 +38,28 @@ export default function AcceptOfferModal({ asset }: { asset: FullAsset }) {
   const lastOffer = sellOffers[sellOffers.length - 1];
 
   const onSubmit = async () => {
-    //TODO: add loader
-    try {
-      const response = await acceptNFTOffer({
-        NFTokenSellOffer: lastOffer.nft_offer_index,
-      });
-      refetchNfts();
-      refetchSellOffers();
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+    setIsSubmitting(true);
+
+    const promise = acceptNFTOffer({
+      NFTokenSellOffer: lastOffer.nft_offer_index,
+    });
+
+    toast.promise(promise, {
+      error: (error) => {
+        setIsSubmitting(false);
+
+        const uiError = toUIError(error);
+        return uiError.message;
+      },
+      loading: 'Sending transaction...',
+      success: () => {
+        refetchNfts();
+        refetchSellOffers();
+        setIsSubmitting(false);
+
+        return 'Congratulations! Offer accepted.';
+      },
+    });
   };
 
   return (
@@ -72,6 +87,7 @@ export default function AcceptOfferModal({ asset }: { asset: FullAsset }) {
         <div className='flex gap-2 space-y-0'>
           <Checkbox
             checked={isChecked}
+            disabled={isSubmitting}
             id='terms'
             onCheckedChange={() => setIsChecked((prev) => !prev)}
           />
@@ -83,7 +99,7 @@ export default function AcceptOfferModal({ asset }: { asset: FullAsset }) {
         <DialogFooter>
           <Button
             className='w-full bg-transparent'
-            disabled={!isChecked}
+            disabled={!isChecked || isSubmitting}
             onClick={onSubmit}
           >
             Sign & send a transaction

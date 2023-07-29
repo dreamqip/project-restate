@@ -24,14 +24,19 @@ import { useLedger } from '@/hooks/use-ledger';
 import { useNftId } from '@/hooks/use-nft-id';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useWallet } from '@/hooks/use-wallet';
+import { toUIError } from '@/lib/error';
 import { buildAmount } from '@/lib/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ChevronLeftIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { createNFTOffer } = useLedger();
   const { wallet } = useWallet();
 
@@ -52,19 +57,29 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    //TODO: add loader
-    try {
-      const response = await createNFTOffer({
-        amount: buildAmount(values.amount),
-        flags: 1,
-        NFTokenID: nftId,
-      });
+    setIsSubmitting(true);
 
-      refetchSellOffers();
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+    const promise = createNFTOffer({
+      amount: buildAmount(values.amount),
+      flags: 1,
+      NFTokenID: nftId,
+    });
+
+    toast.promise(promise, {
+      error: (error) => {
+        setIsSubmitting(false);
+
+        const uiError = toUIError(error);
+        return uiError.message;
+      },
+      loading: 'Sending transaction...',
+      success: () => {
+        refetchSellOffers();
+        setIsSubmitting(false);
+
+        return 'Offer created successfully!';
+      },
+    });
   };
 
   return (
@@ -99,7 +114,11 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
                   {/* We need to show to the user word id in human readable format, so we add 1 to the index */}
                   <FormLabel>Sale Price</FormLabel>
                   <FormControl>
-                    <Input {...field} className='bg-transparent' />
+                    <Input
+                      {...field}
+                      className='bg-transparent'
+                      disabled={isSubmitting}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -112,10 +131,11 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
+                      disabled={isSubmitting}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormLabel className='font-normal leading-none'>
+                  <FormLabel className='cursor-pointer font-normal leading-none'>
                     By creating an offer for the product you own, you understand
                     that you will not be able to return it once it is bought,
                     but you can cancel the offer before that.
@@ -128,7 +148,7 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
             <div>
               <Button
                 className='w-full bg-transparent'
-                disabled={!form.formState.isValid}
+                disabled={!form.formState.isValid || isSubmitting}
                 type='submit'
               >
                 Sign & send a transaction
