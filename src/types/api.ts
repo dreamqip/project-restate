@@ -1,4 +1,4 @@
-import type { Asset, FullAsset, Offer } from './notion';
+import type { Asset, FullAsset, FullAssetWithPageId, Offer } from './notion';
 
 type PaginationBase = {
   cursor?: string;
@@ -13,4 +13,4 @@ export type OfferResponse = {
   offers: Offer[];
 } & PaginationBase;
 
-export type FullAssetResponse = FullAsset;
+export type FullAssetResponse = FullAssetWithPageId;

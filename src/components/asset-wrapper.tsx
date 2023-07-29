@@ -1,4 +1,4 @@
-import type { FullAsset } from '@/types/notion';
+import type { FullAssetWithPageId } from '@/types/notion';
 
 import AssetPage from '@/components/asset';
 import { NftOffersProvider } from '@/providers/nft-offers-provider';
@@ -7,7 +7,7 @@ export default function AssetWrapper({
   asset,
   nftId,
 }: {
-  asset: FullAsset;
+  asset: FullAssetWithPageId;
   nftId: string;
 }) {
   return (

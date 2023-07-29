@@ -142,7 +142,7 @@ export async function getOffers(pageSize: number, cursor?: string) {
         and: [
           {
             number: {
-              is_not_empty: true,
+              greater_than: 0,
             },
             property: 'Price',
           },
@@ -291,7 +291,32 @@ export async function getAssetById(nftId: string) {
       ],
     };
 
-    return fullAsset;
+    return {
+      asset: fullAsset,
+      pageId: page.id,
+    };
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      return errorToUIError(error);
+    }
+
+    throw error;
+  }
+}
+
+export async function updateAssetByPageId(pageId: string, payload: number) {
+  try {
+    // Update price of the asset
+    const rawData = await notion.pages.update({
+      page_id: pageId,
+      properties: {
+        Price: {
+          number: payload,
+        },
+      },
+    });
+
+    return rawData;
   } catch (error) {
     if (isNotionClientError(error)) {
       return errorToUIError(error);

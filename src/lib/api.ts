@@ -20,6 +20,7 @@ export async function getOffers(
       'Content-Type': 'application/json',
     },
     method: 'GET',
+    next: { tags: ['offers'] },
   });
 
   if (!response.ok) {
@@ -47,4 +48,25 @@ export async function getAssetById(
   }
 
   return (await response.json()) as FullAssetResponse;
+}
+
+async function updateAssetByPageId(
+  pageId: string,
+  price: number,
+): Promise<{ message: string }> {
+  const url = new URL(`/api/assets/${pageId}`, process.env.HOST);
+
+  const response = await fetch(url.toString(), {
+    body: JSON.stringify({ price }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PATCH',
+  });
+
+  if (!response.ok) {
+    throw new Error((await response.json()) as string);
+  }
+
+  return (await response.json()) as { message: string };
 }

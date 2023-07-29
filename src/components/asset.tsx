@@ -1,6 +1,6 @@
 'use client';
 
-import type { FullAsset } from '@/types/notion';
+import type { FullAssetWithPageId } from '@/types/notion';
 
 import AcceptOfferModal from '@/components/accept-offer-modal';
 import AssetGallery from '@/components/asset-gallery';
@@ -12,7 +12,9 @@ import { useNftOwner } from '@/hooks/use-nft-owner';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Asset({ asset }: { asset: FullAsset }) {
+export default function Asset({ asset }: { asset: FullAssetWithPageId }) {
+  const { asset: fullAsset, pageId } = asset;
+  
   const { isOwner } = useNftOwner();
   const { sellOffers } = useNftSellOffers();
 
@@ -24,24 +26,24 @@ export default function Asset({ asset }: { asset: FullAsset }) {
           <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
           Back
         </Link>
-        <h1 className='mb-3 text-3xl font-bold'>{asset.title}</h1>
-        <p>{asset.subtitle}</p>
+        <h1 className='mb-3 text-3xl font-bold'>{fullAsset.title}</h1>
+        <p>{fullAsset.subtitle}</p>
       </div>
-      <AssetGallery images={asset.images} />
+      <AssetGallery images={fullAsset.images} />
       <div className='max-w-sm'>
         {sellOffers.length ? (
           isOwner ? (
-            <CancelOfferModal asset={asset} />
+            <CancelOfferModal asset={fullAsset} />
           ) : (
-            <AcceptOfferModal asset={asset} />
+            <AcceptOfferModal asset={fullAsset} />
           )
         ) : (
-          isOwner && <CreateOfferModal asset={asset} />
+          isOwner && <CreateOfferModal asset={fullAsset} />
         )}
 
         <div className='grid gap-8'>
           {/* Warranties */}
-          {asset.warranties.map((warranty, index) => (
+          {fullAsset.warranties.map((warranty, index) => (
             <Warranty index={index} key={index} warranty={warranty} />
           ))}
         </div>

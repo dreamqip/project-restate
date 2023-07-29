@@ -18,3 +18,8 @@ export type FullAsset = Omit<Asset, 'image'> & {
     type: string;
   }[];
 };
+
+export type FullAssetWithPageId = {
+  asset: FullAsset;
+  pageId: string;
+};
