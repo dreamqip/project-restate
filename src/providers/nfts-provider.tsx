@@ -1,18 +1,20 @@
+'use client';
+
 import type { AccountNFToken } from 'xrpl';
 
 import { useLedger } from '@/hooks/use-ledger';
 import { useWallet } from '@/hooks/use-wallet';
 import { createContext, useEffect, useState } from 'react';
 
-export const NftsContext = createContext<{
+type NftsContextType = {
   nfts: AccountNFToken[];
   refetchNfts: () => void;
   refetchNftsTrigger: number;
-}>({
-  nfts: [],
-  refetchNfts: () => {},
-  refetchNftsTrigger: 0,
-});
+};
+
+export const NftsContext = createContext<NftsContextType | undefined>(
+  undefined,
+);
 
 export function NftsProvider({ children }: { children: React.ReactNode }) {
   const [nfts, setNfts] = useState<AccountNFToken[]>([]);

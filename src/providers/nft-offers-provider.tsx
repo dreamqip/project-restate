@@ -1,3 +1,5 @@
+'use client';
+
 import type { NFTOffer } from 'xrpl';
 
 import { useAccountNfts } from '@/hooks/use-account-nfts';
@@ -5,22 +7,22 @@ import { useIsConnected } from '@/hooks/use-is-connected';
 import { useXRPLClient } from '@/hooks/use-xrpl-client';
 import { createContext, useEffect, useState } from 'react';
 
-export const NftOffersContext = createContext<{
+type NftOffersContextType = {
   isOwner: boolean;
   refetchSellOffers: () => void;
   sellOffers: NFTOffer[];
-}>({
-  isOwner: false,
-  refetchSellOffers: () => {},
-  sellOffers: [],
-});
+};
+
+export const NftOffersContext = createContext<NftOffersContextType | undefined>(
+  undefined,
+);
 
 export function NftOffersProvider({
   children,
   nftId,
 }: {
   children: React.ReactNode;
-  nftId: string | undefined;
+  nftId: string;
 }) {
   const [sellOffers, setSellOffers] = useState<NFTOffer[]>([]);
   const [isOwner, setIsOwner] = useState<boolean>(false);

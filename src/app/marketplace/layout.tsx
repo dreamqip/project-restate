@@ -1,5 +1,3 @@
-'use client';
-
 import { NftsProvider } from '@/providers/nfts-provider';
 
 export default function MarketPlaceLayout({
