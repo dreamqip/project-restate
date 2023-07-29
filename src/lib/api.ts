@@ -31,7 +31,7 @@ export async function getOffers(
 
 export async function getAssetById(
   nftId: string,
-): Promise<FullAssetResponse | undefined> {
+): Promise<FullAssetResponse | string> {
   const url = new URL(`/api/assets/${nftId}`, process.env.HOST);
 
   const response = await fetch(url.toString(), {
@@ -43,7 +43,7 @@ export async function getAssetById(
 
   // Do something more useful with the response
   if (!response.ok) {
-    return;
+    return (await response.json()) as string;
   }
 
   return (await response.json()) as FullAssetResponse;
