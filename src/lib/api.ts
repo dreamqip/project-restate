@@ -50,11 +50,11 @@ export async function getAssetById(
   return (await response.json()) as FullAssetResponse;
 }
 
-async function updateAssetByPageId(
+export async function updateAssetByPageId(
   pageId: string,
   price: number,
 ): Promise<{ message: string }> {
-  const url = new URL(`/api/assets/${pageId}`, process.env.HOST);
+  const url = new URL(`/api/assets/${pageId}`, 'http://localhost:3000/');
 
   const response = await fetch(url.toString(), {
     body: JSON.stringify({ price }),

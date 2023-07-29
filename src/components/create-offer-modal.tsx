@@ -24,6 +24,7 @@ import { useLedger } from '@/hooks/use-ledger';
 import { useNftId } from '@/hooks/use-nft-id';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useWallet } from '@/hooks/use-wallet';
+import { updateAssetByPageId } from '@/lib/api';
 import { toUIError } from '@/lib/error';
 import { buildAmount } from '@/lib/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,7 +35,13 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
-export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
+export default function CancelOfferModal({
+  fullAsset,
+  pageId,
+}: {
+  fullAsset: FullAsset;
+  pageId: string;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { createNFTOffer } = useLedger();
@@ -73,7 +80,9 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
         return uiError.message;
       },
       loading: 'Sending transaction...',
-      success: () => {
+      success: async () => {
+        await updateAssetByPageId(pageId, Number(values.amount));
+
         refetchSellOffers();
         setIsSubmitting(false);
 
@@ -93,10 +102,10 @@ export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
         <DialogHeader>
           <DialogClose className='mb-2 flex max-w-min items-center justify-start whitespace-nowrap text-accents-3'>
             <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-            Back to {asset.title}
+            Back to {fullAsset.title}
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
-            {asset.title}
+            {fullAsset.title}
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec

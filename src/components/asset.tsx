@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 export default function Asset({ asset }: { asset: FullAssetWithPageId }) {
   const { asset: fullAsset, pageId } = asset;
-  
+
   const { isOwner } = useNftOwner();
   const { sellOffers } = useNftSellOffers();
 
@@ -33,12 +33,12 @@ export default function Asset({ asset }: { asset: FullAssetWithPageId }) {
       <div className='max-w-sm'>
         {sellOffers.length ? (
           isOwner ? (
-            <CancelOfferModal asset={fullAsset} />
+            <CancelOfferModal fullAsset={fullAsset} pageId={pageId} />
           ) : (
-            <AcceptOfferModal asset={fullAsset} />
+            <AcceptOfferModal fullAsset={fullAsset} pageId={pageId} />
           )
         ) : (
-          isOwner && <CreateOfferModal asset={fullAsset} />
+          isOwner && <CreateOfferModal fullAsset={fullAsset} pageId={pageId} />
         )}
 
         <div className='grid gap-8'>
