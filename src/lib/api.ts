@@ -3,7 +3,7 @@ import type { FullAssetResponse, OfferResponse } from '@/types/api';
 export async function getOffers(
   pageSize?: number,
   cursor?: string,
-): Promise<OfferResponse | undefined> {
+): Promise<OfferResponse | string> {
   // We cannot use relative paths here because this code will be executed on the server side
   const url = new URL('/api/offers', process.env.HOST);
 
@@ -22,9 +22,8 @@ export async function getOffers(
     method: 'GET',
   });
 
-  // Do something more useful with the response
   if (!response.ok) {
-    return;
+    return (await response.json()) as string;
   }
 
   return (await response.json()) as OfferResponse;

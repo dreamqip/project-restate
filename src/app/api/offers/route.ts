@@ -10,6 +10,12 @@ export async function GET(req: NextRequest) {
   try {
     const assets = await getOffers(Number(pageSize), cursor);
 
+    if (!assets.offers.length) {
+      return NextResponse.json('No offers found', {
+        status: 404,
+      });
+    }
+
     return NextResponse.json(assets, {
       status: 200,
     });
