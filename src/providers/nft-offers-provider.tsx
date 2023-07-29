@@ -9,6 +9,7 @@ import { createContext, useEffect, useState } from 'react';
 
 type NftOffersContextType = {
   isOwner: boolean;
+  nftId: string;
   refetchSellOffers: () => void;
   sellOffers: NFTOffer[];
 };
@@ -70,6 +71,7 @@ export function NftOffersProvider({
     <NftOffersContext.Provider
       value={{
         isOwner,
+        nftId,
         refetchSellOffers,
         sellOffers,
       }}
