@@ -13,6 +13,4 @@ export type OfferResponse = {
   offers: Offer[];
 } & PaginationBase;
 
-export type FullAssetResponse = {
-  fullAsset: FullAsset;
-};
+export type FullAssetResponse = FullAsset;
