@@ -1,4 +1,4 @@
-import { getOfferById, NotionError } from '@/lib/notion';
+import { getAssetById, NotionError } from '@/lib/notion';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -8,9 +8,9 @@ export async function GET(
   const nftId = params.nftId;
 
   try {
-    const fullOffer = await getOfferById(nftId);
+    const fullAsset = await getAssetById(nftId);
 
-    return NextResponse.json(fullOffer);
+    return NextResponse.json(fullAsset);
   } catch (error) {
     if (error instanceof NotionError) {
       return NextResponse.json(error.message, {
