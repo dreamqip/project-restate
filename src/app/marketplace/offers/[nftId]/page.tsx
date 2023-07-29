@@ -1,12 +1,12 @@
-'use client';
-
-import { MARKUP_PRODUCT } from '@/app/marketplace/test-product';
 import AssetWrapper from '@/components/asset-wrapper';
-import { useParams } from 'next/navigation';
+import { getAssetById } from '@/lib/api';
 
-export default function Page() {
-  const { nftId }: { nftId?: string | undefined } = useParams();
-  // get here product by nftId and pass it down
+export default async function Page({ params }: { params: { nftId: string } }) {
+  const response = await getAssetById(params.nftId);
 
-  return <AssetWrapper asset={MARKUP_PRODUCT} nftId={nftId} />;
+  if (typeof response === 'string') {
+    return <div>{response}</div>;
+  }
+
+  return <AssetWrapper asset={response} nftId={params.nftId} />;
 }

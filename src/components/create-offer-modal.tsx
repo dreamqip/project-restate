@@ -1,4 +1,6 @@
-import type { Product } from '@/app/marketplace/test-product';
+'use client';
+
+import type { FullAsset } from '@/types/notion';
 
 import {
   Button,
@@ -19,6 +21,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { useLedger } from '@/hooks/use-ledger';
+import { useNftId } from '@/hooks/use-nft-id';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useWallet } from '@/hooks/use-wallet';
 import { buildAmount } from '@/lib/transaction';
@@ -28,14 +31,12 @@ import { ChevronLeftIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-interface CreateOfferModalProps {
-  product: Product;
-}
-export default function CreateOfferModal({ product }: CreateOfferModalProps) {
+export default function CreateOfferModal({ asset }: { asset: FullAsset }) {
   const { createNFTOffer } = useLedger();
   const { wallet } = useWallet();
 
   const { refetchSellOffers } = useNftSellOffers();
+  const { nftId } = useNftId();
 
   const formSchema = z.object({
     amount: z.string().nonempty(),
@@ -56,7 +57,7 @@ export default function CreateOfferModal({ product }: CreateOfferModalProps) {
       const response = await createNFTOffer({
         amount: buildAmount(values.amount),
         flags: 1,
-        NFTokenID: product.nftId,
+        NFTokenID: nftId,
       });
 
       refetchSellOffers();
@@ -77,10 +78,10 @@ export default function CreateOfferModal({ product }: CreateOfferModalProps) {
         <DialogHeader>
           <DialogClose className='mb-2 flex max-w-min items-center justify-start whitespace-nowrap text-accents-3'>
             <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-            Back to {product.name}
+            Back to {asset.title}
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
-            {product.name}
+            {asset.title}
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec

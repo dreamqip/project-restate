@@ -1,14 +1,15 @@
-import type { Product as ProductType } from '@/app/marketplace/test-product';
+import type { FullAsset } from '@/types/notion';
 
 import AssetPage from '@/components/asset';
 import { NftOffersProvider } from '@/providers/nft-offers-provider';
 
-interface AssetProps {
-  asset: ProductType;
-  nftId: string | undefined;
-}
-
-export default function AssetWrapper({ asset, nftId }: AssetProps) {
+export default function AssetWrapper({
+  asset,
+  nftId,
+}: {
+  asset: FullAsset;
+  nftId: string;
+}) {
   return (
     <NftOffersProvider nftId={nftId}>
       <AssetPage asset={asset} />

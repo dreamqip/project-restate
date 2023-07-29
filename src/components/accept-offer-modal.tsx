@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/app/marketplace/test-product';
+import type { FullAsset } from '@/types/notion';
 
 import { useAccountNfts } from '@/hooks/use-account-nfts';
 import { useLedger } from '@/hooks/use-ledger';
@@ -24,10 +24,7 @@ import {
   DialogTrigger,
 } from './ui';
 
-interface AcceptOfferModalProps {
-  product: Product;
-}
-export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
+export default function AcceptOfferModal({ asset }: { asset: FullAsset }) {
   const [isChecked, setIsChecked] = useState(false);
   const { wallet } = useWallet();
   const { acceptNFTOffer } = useLedger();
@@ -61,7 +58,7 @@ export default function AcceptOfferModal({ product }: AcceptOfferModalProps) {
         <DialogHeader>
           <DialogClose className='mb-2 flex max-w-min items-center justify-start whitespace-nowrap text-accents-3'>
             <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-            Back to {product.name}
+            Back to {asset.title}
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
             Accept the offer for <br />
