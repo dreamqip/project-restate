@@ -238,6 +238,7 @@ export async function getAssetById(nftId: string) {
           description: extractPropertyItemValueToString(
             properties['Asset Identity'],
           ),
+          type: 'Asset Identity',
         },
         {
           certifier: extractPropertyItemValueToString(
@@ -249,6 +250,7 @@ export async function getAssetById(nftId: string) {
           description: extractPropertyItemValueToString(
             properties['NFT Pairing'],
           ),
+          type: 'NFT Pairing',
         },
         {
           certifier: extractPropertyItemValueToString(
@@ -260,6 +262,7 @@ export async function getAssetById(nftId: string) {
           description: extractPropertyItemValueToString(
             properties['Carbon Offset'],
           ),
+          type: 'Carbon Offset',
         },
         {
           certifier: extractPropertyItemValueToString(
@@ -271,6 +274,19 @@ export async function getAssetById(nftId: string) {
           description: extractPropertyItemValueToString(
             properties['Artwork License'],
           ),
+          type: 'Artwork License',
+        },
+        {
+          certifier: extractPropertyItemValueToString(
+            properties['Vault Report Certifier'],
+          ),
+          date: extractPropertyItemValueToString(
+            properties['Vault Report Date'],
+          ),
+          description: extractPropertyItemValueToString(
+            properties['Vault Report'],
+          ),
+          type: 'Vault Report',
         },
       ],
     };

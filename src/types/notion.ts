@@ -5,8 +5,8 @@ export type Asset = {
 };
 
 export type Offer = Asset & {
-  nftId?: string;
-  price?: string;
+  nftId: string;
+  price: string;
 };
 
 export type FullAsset = Omit<Asset, 'image'> & {
@@ -15,5 +15,6 @@ export type FullAsset = Omit<Asset, 'image'> & {
     certifier: string;
     date: string;
     description: string;
+    type: string;
   }[];
 };
