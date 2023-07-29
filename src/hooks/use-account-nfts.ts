@@ -6,6 +6,6 @@ export function useAccountNfts() {
   if (!context) {
     throw new Error('useAccountNfts must be used within NftsProvider');
   }
-  const { nfts, refetchNfts } = context;
-  return { nfts, refetchNfts };
+  const { nfts, refetchNfts, refetchNftsTrigger } = context;
+  return { nfts, refetchNfts, refetchNftsTrigger };
 }

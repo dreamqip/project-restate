@@ -1,10 +1,10 @@
-import { NftsContext } from '@/providers/nfts-provider';
+import { NftOffersContext } from '@/providers/nft-offers-provider';
 import { useContext } from 'react';
 
 export function useNftOwner() {
-  const context = useContext(NftsContext);
+  const context = useContext(NftOffersContext);
   if (!context) {
-    throw new Error('useNftOwner must be used within NftsProvider');
+    throw new Error('useNftOwner must be used within NftOffersProvider');
   }
   const { isOwner } = context;
   return { isOwner };
