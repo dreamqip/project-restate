@@ -80,9 +80,9 @@ export default function AcceptOfferModal({
       </DialogTrigger>
       <DialogContent className='max-w-sm gap-6 border-none bg-transparent p-4 sm:left-32 sm:top-32 sm:translate-x-0 sm:translate-y-0 sm:p-0'>
         <DialogHeader>
-          <DialogClose className='mb-2 flex max-w-min items-center justify-start whitespace-nowrap text-accents-3'>
+          <DialogClose className='mb-2 flex items-center text-accents-3'>
             <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-            Back to {fullAsset.title}
+            <span className='max-w-sm truncate'>Back to {fullAsset.title}</span>
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
             Accept the offer for <br />
