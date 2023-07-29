@@ -42,7 +42,6 @@ const nextConfig = {
       config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
-          process: 'process/browser',
         }),
         new webpack.IgnorePlugin({
           checkResource(resource) {
