@@ -1,8 +1,12 @@
-import type { Asset } from '@/types/notion';
+import type { Asset, Offer } from '@/types/notion';
 
 import Image from 'next/image';
 
-export default function AssetCard({ asset }: { asset: Asset }) {
+export default function AssetCard({
+  asset,
+}: {
+  asset: Asset & { price: Offer['price'] };
+}) {
   return (
     <div className='grid max-w-sm gap-4'>
       <Image
@@ -19,7 +23,7 @@ export default function AssetCard({ asset }: { asset: Asset }) {
         </div>
         <div className='grid text-right'>
           <span className='font-medium text-accents-3'>Sale Price</span>
-          <span>{`No price from notion`}</span>
+          <span>{asset.price} XRP</span>
         </div>
       </div>
       <p className='text-accents-1'>{asset.subtitle}</p>

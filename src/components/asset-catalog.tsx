@@ -1,12 +1,12 @@
 'use client';
 
-import type { Asset } from '@/types/notion';
+import type { Asset, Offer } from '@/types/notion';
 
 import AssetCard from '@/components/asset-card';
 import Link from 'next/link';
 
 interface AssetCatalogProps {
-  assets: Asset[];
+  assets: (Asset & { nftId: Offer['nftId']; price: Offer['price'] })[];
   content: string;
 }
 
@@ -21,15 +21,20 @@ export default function AssetCatalog({ assets, content }: AssetCatalogProps) {
         </p>
       </div>
       <div className='grid max-w-max gap-8 xl:grid-cols-2	2xl:grid-cols-3'>
-        {/* Products */}
-        {assets.map((asset, index) => (
-          <Link
-            href={content === 'Offers' ? `offers/${123}` : `portfolio/${123}`}
-            key={index}
+        {assets.map((asset, index) => {
+          const { nftId, ...rest } = asset;
+          return <Link
+            href={
+              content === 'Offers'
+                ? `offers/${nftId}`
+                : `portfolio/${nftId}`
+            }
+            // Make sure to use a unique key for each item
+            key={`asset-${nftId}-${index}`}
           >
-            <AssetCard asset={asset} />
+            <AssetCard asset={rest} />
           </Link>
-        ))}
+        })}
       </div>
     </div>
   );
