@@ -7,9 +7,13 @@ export type Asset = {
 export type Offer = Asset & {
   nftId?: string;
   price?: string;
-}
+};
 
-// TODO: Add other required properties
-export type FullOffer = Omit<Offer, 'image'> & {
+export type FullAsset = Omit<Asset, 'image'> & {
   images: string[];
+  warranties: {
+    certifier: string;
+    date: string;
+    description: string;
+  }[];
 };

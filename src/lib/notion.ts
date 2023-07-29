@@ -1,4 +1,4 @@
-import type { FullOffer, Offer } from '@/types/notion';
+import type { FullAsset, Offer } from '@/types/notion';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 import {
@@ -196,7 +196,7 @@ export async function getOffers(pageSize: number, cursor?: string) {
   }
 }
 
-export async function getOfferById(nftId: string) {
+export async function getAssetById(nftId: string) {
   try {
     const rawData = await notion.databases.query({
       database_id: databaseId,
@@ -211,27 +211,71 @@ export async function getOfferById(nftId: string) {
     const page = rawData.results[0];
 
     if (!page) {
-      throw new NotionError('Offer not found.', 404);
+      throw new NotionError('Asset not found.', 404);
     }
 
     // @ts-expect-error
     if (!isFullPage(page)) {
-      throw new NotionError('Offer not found.', 404);
+      throw new NotionError('Asset not found.', 404);
     }
 
     const { properties } = page;
 
-    const offer: FullOffer = {
+    const fullAsset: FullAsset = {
       images: extractPropertyItemValueToString(properties.Images)
         .split(',')
         .map((image) => image.trim()),
-      nftId: extractPropertyItemValueToString(properties.ID),
-      price: extractPropertyItemValueToString(properties.Price),
       subtitle: extractPropertyItemValueToString(properties.Subtitle),
       title: extractPropertyItemValueToString(properties.Title),
+      warranties: [
+        {
+          certifier: extractPropertyItemValueToString(
+            properties['Asset Identity Certifier'],
+          ),
+          date: extractPropertyItemValueToString(
+            properties['Asset Identity Date'],
+          ),
+          description: extractPropertyItemValueToString(
+            properties['Asset Identity'],
+          ),
+        },
+        {
+          certifier: extractPropertyItemValueToString(
+            properties['NFT Pairing Certifier'],
+          ),
+          date: extractPropertyItemValueToString(
+            properties['NFT Pairing Date'],
+          ),
+          description: extractPropertyItemValueToString(
+            properties['NFT Pairing'],
+          ),
+        },
+        {
+          certifier: extractPropertyItemValueToString(
+            properties['Carbon Offset Certifier'],
+          ),
+          date: extractPropertyItemValueToString(
+            properties['Carbon Offset Date'],
+          ),
+          description: extractPropertyItemValueToString(
+            properties['Carbon Offset'],
+          ),
+        },
+        {
+          certifier: extractPropertyItemValueToString(
+            properties['Artwork License Certifier'],
+          ),
+          date: extractPropertyItemValueToString(
+            properties['Artwork License Date'],
+          ),
+          description: extractPropertyItemValueToString(
+            properties['Artwork License'],
+          ),
+        },
+      ],
     };
 
-    return offer;
+    return fullAsset;
   } catch (error) {
     if (isNotionClientError(error)) {
       return errorToUIError(error);
