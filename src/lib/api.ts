@@ -1,4 +1,4 @@
-import type { OfferResponse } from '@/types/api';
+import type { FullAssetResponse, OfferResponse } from '@/types/api';
 
 export async function getOffers(
   pageSize?: number,
@@ -30,7 +30,9 @@ export async function getOffers(
   return (await response.json()) as OfferResponse;
 }
 
-export async function getAssetById(nftId: string) {
+export async function getAssetById(
+  nftId: string,
+): Promise<FullAssetResponse | undefined> {
   const url = new URL(`/api/assets/${nftId}`, process.env.HOST);
 
   const response = await fetch(url.toString(), {
@@ -45,5 +47,5 @@ export async function getAssetById(nftId: string) {
     return;
   }
 
-  return await response.json();
+  return (await response.json()) as FullAssetResponse;
 }
