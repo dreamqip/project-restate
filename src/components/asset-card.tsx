@@ -21,10 +21,12 @@ export default function AssetCard({
           <span className='font-medium text-accents-3'>Product Name</span>
           <span>{asset.title}</span>
         </div>
-        <div className='grid text-right'>
+        {asset.price && (
+          <div className='grid text-right'>
           <span className='font-medium text-accents-3'>Sale Price</span>
           <span>{asset.price} XRP</span>
         </div>
+        )}
       </div>
       <p className='text-accents-1'>{asset.subtitle}</p>
     </div>
