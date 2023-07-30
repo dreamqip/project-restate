@@ -1,4 +1,4 @@
-import type { FullAsset, Offer } from '@/types/notion';
+import type { Asset, FullAsset, Offer } from '@/types/notion';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 import {
@@ -187,6 +187,65 @@ export async function getOffers(pageSize: number, cursor?: string) {
       nextCursor: rawData.next_cursor,
       offers,
     };
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      return errorToUIError(error);
+    }
+
+    throw error;
+  }
+}
+
+export async function getAssetsByIds(nftIds: string[]) {
+  try {
+    const rawData = await notion.databases.query({
+      database_id: databaseId,
+      filter: {
+        and: [
+          {
+            property: 'ID',
+            title: {
+              is_not_empty: true,
+            },
+          },
+        ],
+      },
+    });
+
+    const assets: Offer[] = [];
+
+    for (const page of rawData.results) {
+      // @ts-expect-error
+      if (!isFullPage(page)) {
+        continue;
+      }
+
+      if (
+        !nftIds.includes(extractPropertyItemValueToString(page.properties.ID))
+      ) {
+        continue;
+      }
+
+      const { properties } = page;
+
+      const asset: Offer = {
+        // Images would be as string separated by comma, so we need to split it and take the first one
+        image: extractPropertyItemValueToString(properties.Images).split(
+          ',',
+        )[0],
+        nftId: extractPropertyItemValueToString(properties.ID),
+        price:
+          extractPropertyItemValueToString(properties.Price) === '0'
+            ? ''
+            : extractPropertyItemValueToString(properties.Price),
+        subtitle: extractPropertyItemValueToString(properties.Subtitle),
+        title: extractPropertyItemValueToString(properties.Title),
+      };
+
+      assets.push(asset);
+    }
+
+    return assets;
   } catch (error) {
     if (isNotionClientError(error)) {
       return errorToUIError(error);
