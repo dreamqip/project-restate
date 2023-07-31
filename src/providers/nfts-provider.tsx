@@ -1,71 +1,32 @@
-import type { AccountNFToken, NFTOffer } from 'xrpl';
+'use client';
 
-import { useIsConnected } from '@/hooks/use-is-connected';
+import type { AccountNFToken } from 'xrpl';
+
 import { useLedger } from '@/hooks/use-ledger';
 import { useWallet } from '@/hooks/use-wallet';
-import { useXRPLClient } from '@/hooks/use-xrpl-client';
 import { createContext, useEffect, useState } from 'react';
 
-export const NftsContext = createContext<{
-  isOwner: boolean;
+type NftsContextType = {
   nfts: AccountNFToken[];
   refetchNfts: () => void;
-  refetchSellOffers: () => void;
-  sellOffers: NFTOffer[];
-}>({
-  isOwner: false,
-  nfts: [],
-  refetchNfts: () => {},
-  refetchSellOffers: () => {},
-  sellOffers: [],
-});
+  refetchNftsTrigger: number;
+};
 
-export function NftsProvider({
-  children,
-  nftId,
-}: {
-  children: React.ReactNode;
-  nftId: string | undefined;
-}) {
-  const [sellOffers, setSellOffers] = useState<NFTOffer[]>([]);
+export const NftsContext = createContext<NftsContextType | undefined>(
+  undefined,
+);
+
+export function NftsProvider({ children }: { children: React.ReactNode }) {
   const [nfts, setNfts] = useState<AccountNFToken[]>([]);
-  const [isOwner, setIsOwner] = useState<boolean>(false);
 
-  const [offersRefetchTrigger, setOffersRefetchTrigger] = useState(0);
-  const [nftsRefetchTrigger, setNftsRefetchTrigger] = useState(0);
+  const [refetchNftsTrigger, setNftsRefetchTrigger] = useState(0);
 
   const { wallet } = useWallet();
   const { getNFTs } = useLedger();
-  const { client } = useXRPLClient();
-  const isConnected = useIsConnected();
-
-  function refetchSellOffers() {
-    setOffersRefetchTrigger((prev) => prev + 1);
-  }
 
   function refetchNfts() {
     setNftsRefetchTrigger((prev) => prev + 1);
   }
-
-  useEffect(() => {
-    async function fetchNftSellOffers() {
-      try {
-        const response = await client.request({
-          command: 'nft_sell_offers',
-          nft_id: nftId!,
-        });
-        //console.log(response);
-        setSellOffers(response.result.offers);
-      } catch (error) {
-        setSellOffers([]);
-        //console.error(error);
-      }
-    }
-
-    if (client && isConnected && nftId) {
-      fetchNftSellOffers();
-    }
-  }, [client, nftId, offersRefetchTrigger, isConnected]);
 
   useEffect(() => {
     async function fetchAccountNfts() {
@@ -80,20 +41,14 @@ export function NftsProvider({
     }
 
     if (wallet) fetchAccountNfts();
-  }, [wallet, getNFTs, nftsRefetchTrigger]);
-
-  useEffect(() => {
-    if (nftId) setIsOwner(nfts.map((nft) => nft.NFTokenID).includes(nftId));
-  }, [nftId, nfts, nftsRefetchTrigger]);
+  }, [wallet, getNFTs, refetchNftsTrigger]);
 
   return (
     <NftsContext.Provider
       value={{
-        isOwner,
         nfts,
         refetchNfts,
-        refetchSellOffers,
-        sellOffers,
+        refetchNftsTrigger,
       }}
     >
       {children}

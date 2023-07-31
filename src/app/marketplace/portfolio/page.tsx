@@ -1,12 +1,39 @@
-import ProductCatalog from '@/components/product-catalog';
-import React from 'react';
+'use client';
 
-import { MARKUP_PRODUCT } from '../test-product';
-
-const products = Array(12).fill(MARKUP_PRODUCT);
+import AssetCatalog from '@/components/asset-catalog';
+import { useAccountNfts } from '@/hooks/use-account-nfts';
+import useSWR from 'swr';
 
 export default function Page() {
-  // get here nfts for account (useAccountNfts)
-  // parse them into Products and pass below
-  return <ProductCatalog content='Portfolio' products={products} />;
+  const { nfts } = useAccountNfts();
+
+  const { data: assets, isLoading } = useSWR(
+    nfts.length ? `${process.env.NEXT_PUBLIC_HOST}/api/assets` : null,
+    (url) => {
+      return fetch(url, {
+        body: JSON.stringify({
+          nftIds: nfts.map((nft) => nft.NFTokenID),
+        }),
+        method: 'POST',
+      }).then((res) => res.json());
+    },
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(nfts);
+  
+  console.log(assets);
+  
+
+  // get nft ids from nfts
+  // filter by them to get all assets from notion
+  // add them to assets and pass below
+  return nfts.length ? (
+    <AssetCatalog assets={assets} content='Portfolio' />
+  ) : (
+    <div>Connect Wallet</div>
+  );
 }

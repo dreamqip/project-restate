@@ -1,30 +1,31 @@
-import type { Warranty } from '@/app/marketplace/test-product';
+import dayjs from 'dayjs';
 
-const warrantyMapping: { [key: number]: string } = {
-  1: 'Artwork License',
-  2: 'Asset Identity',
-  3: 'Carbon Offset',
-  4: 'NFT Pairing',
-  5: 'Vault Report',
-};
-
-interface WarrantyProps {
-  warranty: Warranty;
-}
-
-export default function WarrantyComponent({ warranty }: WarrantyProps) {
+export default function WarrantyComponent({
+  index,
+  warranty,
+}: {
+  index: number;
+  warranty: {
+    certifier: string;
+    date: string;
+    description: string;
+    type: string;
+  };
+}) {
   return (
     <div className='grid gap-y-4'>
       <div className='grid'>
         <span className='font-medium text-accents-3'>
-          Warranty #{warranty.type}
+          Warranty #{index + 1}
         </span>
-        <span className='text-2xl'>{warrantyMapping[warranty.type]}</span>
+        <span className='text-2xl'>{warranty.type}</span>
       </div>
       <p>{warranty.description}</p>
       <div className='grid'>
         <span className='font-medium text-accents-3'>Certification Date</span>
-        <span className='text-lg'>{warranty.date}</span>
+        <span className='text-lg'>
+          {dayjs(warranty.date).format('M/D/YYYY')}
+        </span>
       </div>
       <div className='grid'>
         <span className='font-medium text-accents-3'>Certifier</span>

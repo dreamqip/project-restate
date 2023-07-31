@@ -1,6 +1,5 @@
-import type { TransactionTypes } from '@/types';
-
 import { cn, formatDate, getTimeZoneString } from '@/lib/utils';
+import { TransactionTypes } from '@/types';
 import { dropsToXrp } from 'xrpl';
 
 type TransactionProps = {
@@ -37,17 +36,19 @@ export default function Transaction({
           <span className='font-medium text-accents-3'>Transaction Type</span>
           <span>{transactionType}</span>
         </div>
-        <div className='grid text-right'>
-          <span className='font-medium text-accents-3'>Amount</span>
-          <span
-            className={cn({
-              'text-[hsl(97,_57%,_46%)]': received,
-              'text-error': !received,
-            })}
-          >
-            {amount}
-          </span>
-        </div>
+        {transactionType === TransactionTypes.Payment && (
+          <div className='grid text-right'>
+            <span className='font-medium text-accents-3'>Amount</span>
+            <span
+              className={cn({
+                'text-[hsl(97,_57%,_46%)]': received,
+                'text-error': !received,
+              })}
+            >
+              {amount}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

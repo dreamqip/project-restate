@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/app/marketplace/test-product';
+import type { FullAsset } from '@/types/notion';
 
 import {
   Button,
@@ -17,15 +17,23 @@ import {
 import { useLedger } from '@/hooks/use-ledger';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useWallet } from '@/hooks/use-wallet';
+import { updateAssetByPageId } from '@/lib/api';
+import { toUIError } from '@/lib/error';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
-interface CancelOfferModalProps {
-  product: Product;
-}
-export default function CancelOfferModal({ product }: CancelOfferModalProps) {
+export default function CancelOfferModal({
+  fullAsset,
+  pageId,
+}: {
+  fullAsset: FullAsset;
+  pageId: string;
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
   const { wallet } = useWallet();
   const { cancelNFTOffer } = useLedger();
 
@@ -33,30 +41,43 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
   const lastOffer = sellOffers[sellOffers.length - 1];
 
   const onSubmit = async () => {
-    //TODO: add loader
-    try {
-      const response = await cancelNFTOffer({
-        NFTokenOffers: [lastOffer.nft_offer_index],
-      });
-      refetchSellOffers();
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+    setIsSubmitting(true);
+
+    const promise = cancelNFTOffer({
+      NFTokenOffers: [lastOffer.nft_offer_index],
+    });
+
+    toast.promise(promise, {
+      error: (error) => {
+        setIsSubmitting(false);
+
+        const uiError = toUIError(error);
+        return uiError.message;
+      },
+      loading: 'Sending transaction...',
+      success: async () => {
+        await updateAssetByPageId(pageId, 0);
+
+        refetchSellOffers();
+        setIsSubmitting(false);
+
+        return 'Offer cancelled successfully!';
+      },
+    });
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mb-8 w-full' disabled={!wallet}>
+        <Button className='mb-8 w-full' disabled={!wallet} variant='warning'>
           Cancel the offer
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-sm gap-6 border-none bg-transparent p-4 sm:left-32 sm:top-32 sm:translate-x-0 sm:translate-y-0 sm:p-0'>
+      <DialogContent className=' max-w-sm gap-6 border-none bg-transparent p-4 sm:left-32 sm:top-32 sm:translate-x-0 sm:translate-y-0 sm:p-0'>
         <DialogHeader>
-          <DialogClose className='mb-2 flex max-w-min items-center justify-start whitespace-nowrap text-accents-3'>
+          <DialogClose className='mb-2 flex items-center text-accents-3'>
             <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
-            Back to {product.name}
+            <span className='max-w-sm truncate'>Back to {fullAsset.title}</span>
           </DialogClose>
           <DialogTitle className='!mb-3 !mt-0 text-left text-3xl font-bold'>
             Cancel the offer
@@ -66,9 +87,10 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
             maximus nunc bibendum viverra pretium.
           </DialogDescription>
         </DialogHeader>
-        <div className='flex items-baseline gap-2'>
+        <div className='flex gap-2 space-y-0'>
           <Checkbox
             checked={isChecked}
+            disabled={isSubmitting}
             id='terms'
             onCheckedChange={() => setIsChecked((prev) => !prev)}
           />
@@ -80,8 +102,9 @@ export default function CancelOfferModal({ product }: CancelOfferModalProps) {
         <DialogFooter>
           <Button
             className='w-full bg-transparent'
-            disabled={!isChecked}
+            disabled={!isChecked || isSubmitting}
             onClick={onSubmit}
+            variant='destructive'
           >
             Sign & send a transaction
           </Button>

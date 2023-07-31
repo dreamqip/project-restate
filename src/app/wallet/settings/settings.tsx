@@ -15,11 +15,13 @@ import { CopyIcon } from 'lucide-react';
 import { useId, useState } from 'react';
 import { toast } from 'sonner';
 
-import RevealDialog from './reveal-dialog';
+import RevealModal from './reveal-modal';
 
 export default function Settings() {
   const { signOut } = useWallet();
   const { mnemonics } = useMnemonics();
+
+  const [isRevealed, setIsRevealed] = useState(false);
 
   const checkboxId = useId();
   const [checked, setChecked] = useState(false);
@@ -63,11 +65,15 @@ export default function Settings() {
                         {padWithLeadingZeros(i + 1, 2)}
                       </span>
                     }
+                    value={
+                      mnemonics.length && isRevealed
+                        ? mnemonics[i]
+                        : '*'.repeat(4)
+                    }
                     className='text-left text-warning'
                     containerClassName='ring-warning border-warning focus-within:ring-warning'
                     key={i}
                     readOnly
-                    value={mnemonics.length ? mnemonics[i] : '*'.repeat(4)}
                   />
                 ))}
               </div>
@@ -79,11 +85,15 @@ export default function Settings() {
                         {padWithLeadingZeros(i + 7, 2)}
                       </span>
                     }
+                    value={
+                      mnemonics.length && isRevealed
+                        ? mnemonics[i + 6]
+                        : '*'.repeat(4)
+                    }
                     className='text-left text-warning'
                     containerClassName='ring-warning border-warning focus-within:ring-warning'
                     key={i}
                     readOnly
-                    value={mnemonics.length ? mnemonics[i + 6] : '*'.repeat(4)}
                   />
                 ))}
               </div>
@@ -91,14 +101,14 @@ export default function Settings() {
             <div className='my-6 flex items-center justify-center gap-x-4'>
               <Button
                 className='p-0 text-base font-normal text-warning'
-                disabled={!mnemonics.length}
+                disabled={!mnemonics.length || !isRevealed}
                 onClick={handleCopyMnemonics}
                 prefixIcon={<CopyIcon />}
                 variant='ghost'
               >
                 Copy
               </Button>
-              <RevealDialog />
+              <RevealModal setIsRevealed={setIsRevealed} />
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -119,7 +129,7 @@ export default function Settings() {
       </div>
       <Button
         className='mt-6 w-full'
-        disabled={!checked}
+        disabled={!checked || !mnemonics.length}
         onClick={handleRemoveWallet}
         variant='destructive'
       >

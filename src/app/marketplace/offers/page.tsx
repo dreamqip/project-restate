@@ -1,12 +1,15 @@
-import ProductCatalog from '@/components/product-catalog';
-import React from 'react';
+import AssetCatalog from '@/components/asset-catalog';
+import { getOffers } from '@/lib/api';
 
-import { MARKUP_PRODUCT } from '../test-product';
+export const runtime = 'edge';
 
-const products = Array(12).fill(MARKUP_PRODUCT);
+export default async function Page() {
+  const res = await getOffers();
 
-export default function Page() {
-  // get here nfts from notion
-  // parse them into Products and pass below
-  return <ProductCatalog content='Offers' products={products} />;
+  // Temporary, until we have a proper error page
+  if (typeof res === 'string') {
+    return <div>Something went wrong - {res}</div>;
+  }
+
+  return <AssetCatalog assets={res.offers} content='Offers' />;
 }

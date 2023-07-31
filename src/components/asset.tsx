@@ -1,22 +1,20 @@
-import type { Product as ProductType } from '@/app/marketplace/test-product';
+'use client';
 
-import { MARKUP_PRODUCT } from '@/app/marketplace/test-product';
+import type { FullAssetWithPageId } from '@/types/notion';
+
 import AcceptOfferModal from '@/components/accept-offer-modal';
+import AssetGallery from '@/components/asset-gallery';
 import CancelOfferModal from '@/components/cancel-offer-modal';
 import CreateOfferModal from '@/components/create-offer-modal';
-import MintNftModal from '@/components/mint-nft-modal';
-import ProductGallery from '@/components/product-gallery';
 import Warranty from '@/components/warranty';
 import { useNftSellOffers } from '@/hooks/use-nft-offers';
 import { useNftOwner } from '@/hooks/use-nft-owner';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
-interface ProductProps {
-  product: ProductType;
-}
+export default function Asset({ asset }: { asset: FullAssetWithPageId }) {
+  const { asset: fullAsset, pageId } = asset;
 
-export default function Product({ product }: ProductProps) {
   const { isOwner } = useNftOwner();
   const { sellOffers } = useNftSellOffers();
 
@@ -28,26 +26,26 @@ export default function Product({ product }: ProductProps) {
           <ChevronLeftIcon className='mr-1 inline-block h-6 w-6' />
           Back
         </Link>
-        <h1 className='mb-3 text-3xl font-bold'>{product.name}</h1>
-        <p>{product.tagline}</p>
+        <h1 className='mb-3 text-3xl font-bold'>{fullAsset.title}</h1>
+        <p>{fullAsset.subtitle}</p>
       </div>
-      <ProductGallery images={product.images} />
+      <AssetGallery images={fullAsset.images} />
       <div className='max-w-sm'>
-        <MintNftModal product={product} />
         {sellOffers.length ? (
           isOwner ? (
-            <CancelOfferModal product={product} />
+            <CancelOfferModal fullAsset={fullAsset} pageId={pageId} />
           ) : (
-            <AcceptOfferModal product={MARKUP_PRODUCT} />
+            <AcceptOfferModal fullAsset={fullAsset} pageId={pageId} />
           )
         ) : (
-          isOwner && <CreateOfferModal product={product} />
+          isOwner && <CreateOfferModal fullAsset={fullAsset} pageId={pageId} />
         )}
 
         <div className='grid gap-8'>
           {/* Warranties */}
-          <Warranty warranty={product.warranties[0]} />
-          <Warranty warranty={product.warranties[0]} />
+          {fullAsset.warranties.map((warranty, index) => (
+            <Warranty index={index} key={index} warranty={warranty} />
+          ))}
         </div>
       </div>
     </div>

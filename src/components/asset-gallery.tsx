@@ -1,16 +1,18 @@
 'use client';
 
 import { Button } from '@/components/ui';
+import { shimmer, toBase64 } from '@/lib/shimmer';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import Image from 'next/image';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-interface ProductGalleryProps {
+import ImageLegacyWithFallback from './fallback-image';
+
+interface AssetGalleryProps {
   images: string[];
 }
 
-export default function ProductGallery({ images }: ProductGalleryProps) {
-  const [currentIndex, setCurrentIndex] = useState(1);
+export default function AssetGallery({ images }: AssetGalleryProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
@@ -35,10 +37,14 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
         >
           {images.map((image, index) => (
             <div className='mr-4 flex-none' key={index}>
-              <Image
+              <ImageLegacyWithFallback
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(Number(384), Number(384)),
+                )}`}
                 alt='asset image'
                 className='h-96 w-96 object-cover'
                 height={384}
+                placeholder='blur'
                 src={image}
                 width={384}
               />

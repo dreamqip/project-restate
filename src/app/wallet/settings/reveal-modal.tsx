@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -28,7 +28,11 @@ const formSchema = z.object({
   securityTerms: z.boolean().refine((v) => v === true),
 });
 
-export default function RevealDialog() {
+export default function RevealModal({
+  setIsRevealed,
+}: {
+  setIsRevealed: (isRevealed: boolean) => void;
+}) {
   const { signIn } = useWallet();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,6 +53,9 @@ export default function RevealDialog() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     try {
       signIn(values.password);
+
+      // Set the isRevealed state to true
+      setIsRevealed(true);
 
       // Close the dialog
       setOpen(false);

@@ -19,6 +19,9 @@ const buttonVariants = cva(
       },
       variant: {
         default: 'bg-background text-foreground hover:ring-2',
+        warning:
+        'text-warning ring-warning border-warning hover:ring-2',
+        // eslint-disable-next-line perfectionist/sort-objects
         destructive:
           'text-error ring-error border-error hover:ring-2',
         ghost:

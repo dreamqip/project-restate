@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import SendDialog from './send-dialog';
+import SendModal from './send-modal';
 import Transaction from './transaction';
 
 const FIXED_DOLLAR_RATE = 3;
@@ -230,7 +230,7 @@ export default function Wallet() {
       </div>
       <div className='grid grid-cols-2 items-center gap-x-4'>
         {/* Renders button as the child of the DialogTrigger component */}
-        <SendDialog
+        <SendModal
           accountExists={accountExists}
           address={wallet.classicAddress}
         />

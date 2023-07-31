@@ -6,7 +6,19 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        hostname: 's3.us-west-2.amazonaws.com',
+        protocol: 'https',
+      },
+      {
+        hostname: 'picsum.photos',
+        protocol: 'https',
+      }
+    ],
+  },
+  reactStrictMode: true,
   webpack: (
     config,
     { buildId, defaultLoaders, dev, isServer, nextRuntime, webpack },
@@ -25,17 +37,19 @@ const nextConfig = {
     });
 
     config.resolve.fallback = fallback;
-    config.plugins = (config.plugins || []).concat([
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-        process: 'process/browser',
-      }),
-      new webpack.IgnorePlugin({
-        checkResource(resource) {
-          return /.*\/wordlists\/(?!english).*\.json/.test(resource);
-        },
-      }),
-    ]);
+
+    if (!isServer) {
+      config.plugins = (config.plugins || []).concat([
+        new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+        }),
+        new webpack.IgnorePlugin({
+          checkResource(resource) {
+            return /.*\/wordlists\/(?!english).*\.json/.test(resource);
+          },
+        }),
+      ]);
+    }
 
     const aliases = config.resolve.alias || {};
 
