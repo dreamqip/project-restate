@@ -24,7 +24,7 @@ export async function getOffers(
   });
 
   if (!response.ok) {
-    return (await response.json()) as string;
+    throw new Error((await response.json()) as string);
   }
 
   return (await response.json()) as OfferResponse;
@@ -44,7 +44,7 @@ export async function getAssetById(
 
   // Do something more useful with the response
   if (!response.ok) {
-    return (await response.json()) as string;
+    throw new Error((await response.json()) as string);
   }
 
   return (await response.json()) as FullAssetResponse;
