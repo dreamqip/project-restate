@@ -1,4 +1,4 @@
-import type { Asset, FullAsset, Offer } from '@/types/notion';
+import type { FullAsset, Offer } from '@/types/notion';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 import {
@@ -13,7 +13,7 @@ import {
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
-  logLevel: LogLevel.DEBUG,
+  logLevel: process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : undefined,
 });
 
 const databaseId = `${process.env.NOTION_DATABASE_ID}`;
