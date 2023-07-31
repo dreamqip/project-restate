@@ -29,6 +29,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.2",
     "ripple-address-codec": "^4.3.0",
+    "sharp": "^0.32.4",
     "sonner": "^0.6.2",
     "swr": "^2.2.0",
     "tailwind-merge": "^1.14.0",
