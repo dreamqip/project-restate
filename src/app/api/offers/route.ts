@@ -1,10 +1,12 @@
+import { paginationPageSize } from '@/lib/constant';
 import { getOffers, NotionError } from '@/lib/notion';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
-  const pageSize = req.nextUrl.searchParams.get('pageSize') || 10;
+  const pageSize =
+    req.nextUrl.searchParams.get('pageSize') || paginationPageSize;
   const cursor = req.nextUrl.searchParams.get('cursor') || undefined;
 
   try {
