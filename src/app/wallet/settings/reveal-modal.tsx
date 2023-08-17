@@ -92,8 +92,7 @@ export default function RevealModal({
             Reveal mnemonics
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            maximus nunc bibendum viverra pretium.
+            Uncover the key to your digital fortune: reveal mnemonics securely.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

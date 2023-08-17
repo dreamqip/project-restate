@@ -8,8 +8,7 @@ export default function Page() {
       <div className='mb-6'>
         <h1 className='mb-3 text-3xl font-bold'>Unlock the wallet</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec maximus
-          nunc bibendum viverra pretium.
+          Your key to unveiling the boundless possibilities of digital assets.
         </p>
       </div>
       <Login />

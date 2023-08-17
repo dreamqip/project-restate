@@ -83,8 +83,7 @@ export default function CancelOfferModal({
             Cancel the offer
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            maximus nunc bibendum viverra pretium.
+            Regain control: cancel your offer and refine your strategy.
           </DialogDescription>
         </DialogHeader>
         <div className='flex gap-2 space-y-0'>

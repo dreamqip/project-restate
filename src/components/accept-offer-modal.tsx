@@ -89,8 +89,7 @@ export default function AcceptOfferModal({
             {lastOffer && formatAmount(lastOffer.amount)}
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            maximus nunc bibendum viverra pretium.
+            Opportunity unlocked: accept and amplify your asset strategy.
           </DialogDescription>
         </DialogHeader>
         <div className='flex gap-2 space-y-0'>

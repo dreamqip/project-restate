@@ -15,10 +15,7 @@ export default function Page() {
           Back to Create a new wallet
         </Link>
         <h1 className='mb-3 text-3xl font-bold'>Verify mnemonics</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec maximus
-          nunc bibendum viverra pretium.
-        </p>
+        <p>Confirm mnemonics to ensure secure access.</p>
       </div>
       <VerifyMnemonics />
     </div>

@@ -7,10 +7,7 @@ export default function Page() {
     <div className='max-w-sm'>
       <div className='mb-6'>
         <h1 className='mb-3 text-3xl font-bold'>Create a new wallet</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec maximus
-          nunc bibendum viverra pretium.
-        </p>
+        <p>Start your tokenized voyage: shape a wallet for success.</p>
       </div>
       <CreateWallet />
       <p className='text-accents-3'>

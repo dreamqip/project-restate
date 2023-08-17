@@ -2,6 +2,7 @@
 
 import type { FullAsset } from '@/types/notion';
 
+import TermsAndPrivacyLinks from '@/components/terms-and-privacy-links';
 import {
   Button,
   Checkbox,
@@ -108,8 +109,7 @@ export default function CancelOfferModal({
             {fullAsset.title}
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            maximus nunc bibendum viverra pretium.
+            Your offer, your influence: shape the market by creating an offer.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -163,7 +163,8 @@ export default function CancelOfferModal({
                 Sign & send a transaction
               </Button>
               <p className='!ml-0 mt-4 text-accents-3'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Take a moment to familiarize yourself with the terms and
+                conditions.
               </p>
             </div>
           </form>

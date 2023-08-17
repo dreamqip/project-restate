@@ -212,10 +212,7 @@ export default function Wallet() {
   return (
     <div className='max-w-sm'>
       <h1 className='mb-3 text-3xl font-bold'>XRPL Wallet</h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec maximus
-        nunc bibendum viverra pretium.
-      </p>
+      <p>XRPL magic in your hands: transform, trade, and transact with ease.</p>
       <div className='my-8 flex flex-wrap items-baseline gap-x-4'>
         <span className='text-4xl font-semibold tracking-tight'>
           {accountExists ? computedBalance : '0'} XRP
