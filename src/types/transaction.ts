@@ -18,6 +18,7 @@ export enum TransactionTypes {
   CheckCancel = 'CheckCancel',
   CheckCash = 'CheckCash',
   CheckCreate = 'CheckCreate',
+  Clawback = 'Clawback',
   DepositPreauth = 'DepositPreauth',
   EscrowCancel = 'EscrowCancel',
   EscrowCreate = 'EscrowCreate',
