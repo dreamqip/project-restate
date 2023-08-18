@@ -3,7 +3,7 @@ import type { FullAssetResponse, OfferResponse } from '@/types/api';
 export async function getOffers(
   pageSize?: number,
   cursor?: string,
-): Promise<OfferResponse | string> {
+): Promise<OfferResponse> {
   // We cannot use relative paths here because this code will be executed on the server side
   const url = new URL('/api/offers', process.env.NEXT_PUBLIC_HOST);
 
