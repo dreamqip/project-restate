@@ -1,8 +1,29 @@
 const path = require('path');
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: '**',
+        protocol: 'https',
+      },
+    ],
+  },
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        destination: '/marketplace/offers',
+        permanent: true,
+        source: '/',
+      },
+    ];
+  },
   webpack: (
     config,
     { buildId, defaultLoaders, dev, isServer, nextRuntime, webpack },
@@ -21,12 +42,19 @@ const nextConfig = {
     });
 
     config.resolve.fallback = fallback;
-    config.plugins = (config.plugins || []).concat([
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-        process: 'process/browser',
-      }),
-    ]);
+
+    if (!isServer) {
+      config.plugins = (config.plugins || []).concat([
+        new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+        }),
+        new webpack.IgnorePlugin({
+          checkResource(resource) {
+            return /.*\/wordlists\/(?!english).*\.json/.test(resource);
+          },
+        }),
+      ]);
+    }
 
     const aliases = config.resolve.alias || {};
 
@@ -43,4 +71,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

@@ -23,6 +23,10 @@
   --success-light: 212 100% 60%;
   --success-dark: 213 94% 42%;
   --success-lighter: 215 100% 91%;
+  --warning-ligher: 40 100% 91%;
+  --warning-light: 37 91% 65%;
+  --warning: 37 91% 55%;
+  --warning-dark: 29 89% 35%;
   --violet: 270 67% 47%;
   --violet-light: 261 55% 61%;
   --violet-dark: 262 55% 35%;
@@ -40,5 +44,44 @@
 @layer base {
   body {
     @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  [data-sonner-toast] {
+    @apply px-4 py-2 font-sans !important;
+    border-radius: 2rem !important;
+    /* 
+    transition: .4s,opacity .4s,height .4s,box-shadow .2s,background .2s !important; */
+
+    &[data-type='success'] {
+      @apply bg-success-dark text-foreground !important;
+
+      &:hover {
+        @apply bg-success !important;
+      }
+
+      /* & [data-close-button] {
+        @apply relative order-last ml-auto translate-x-0 translate-y-0 bg-transparent text-foreground opacity-100 !important;
+      }
+
+      & [data-close-button] svg {
+        @apply h-4 w-4 !important;
+      } */
+    }
+
+    &[data-type='error'] {
+      @apply bg-error-dark text-foreground !important;
+
+      &:hover {
+        @apply bg-error !important;
+      }
+    }
+
+    /* & [data-icon] {
+      @apply text-success-dark fill-success-dark stroke-foreground stroke-2 !important;
+    } */
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
@@ -7,6 +8,7 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
+  plugins: [require('@tailwindcss/forms'), require('tailwindcss-animate')],
   theme: {
     container: {
       center: true,
@@ -35,6 +37,10 @@ module.exports = {
         'success-light': 'hsl(var(--success-light) / <alpha-value>)',
         'success-dark': 'hsl(var(--success-dark) / <alpha-value>)',
         'success-lighter': 'hsl(var(--success-lighter) / <alpha-value>)',
+        warning: 'hsl(var(--warning) / <alpha-value>)',
+        'warning-light': 'hsl(var(--warning-light) / <alpha-value>)',
+        'warning-dark': 'hsl(var(--warning-dark) / <alpha-value>)',
+        'warning-lighter': 'hsl(var(--warning-lighter) / <alpha-value>)',
         violet: 'hsl(var(--violet) / <alpha-value>)',
         'violet-light': 'hsl(var(--violet-light) / <alpha-value>)',
         'violet-dark': 'hsl(var(--violet-dark) / <alpha-value>)',
@@ -51,7 +57,20 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
       },
+      keyframes: {
+        'accordion-down': {
+          from: { height: 0 },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+      },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
 };
