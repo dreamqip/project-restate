@@ -9,16 +9,21 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 's3.us-west-2.amazonaws.com',
+        hostname: '**',
         protocol: 'https',
       },
-      {
-        hostname: 'picsum.photos',
-        protocol: 'https',
-      }
     ],
   },
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        destination: '/marketplace/offers',
+        permanent: true,
+        source: '/',
+      },
+    ];
+  },
   webpack: (
     config,
     { buildId, defaultLoaders, dev, isServer, nextRuntime, webpack },
