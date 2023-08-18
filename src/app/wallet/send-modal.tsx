@@ -93,8 +93,7 @@ export default function SendModal({
             Send XRP
           </DialogTitle>
           <DialogDescription className='text-left text-base'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            maximus nunc bibendum viverra pretium.
+            Initiate XRP Transfer.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
