@@ -1,4 +1,4 @@
-import type { FullAsset, Offer } from '@/types/notion';
+import type { CreateAssetPayload, FullAsset, Offer } from '@/types/notion';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 import {
@@ -127,6 +127,8 @@ const errorToUIError = (error: NotionClientError) => {
     case APIErrorCode.InvalidRequestURL:
       throw new NotionError('The URL you provided is invalid.', 400);
     case APIErrorCode.InvalidRequest:
+      throw new NotionError('The request you provided is invalid.', 400);
+    case APIErrorCode.ValidationError:
       throw new NotionError('The request you provided is invalid.', 400);
     default:
       throw new NotionError('Something went wrong. Please try again.', 500);
@@ -371,6 +373,183 @@ export async function updateAssetByPageId(pageId: string, payload: number) {
       properties: {
         Price: {
           number: payload,
+        },
+      },
+    });
+
+    return rawData;
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      return errorToUIError(error);
+    }
+
+    throw error;
+  }
+}
+
+export async function createAsset(payload: CreateAssetPayload) {
+  try {
+    const rawData = await notion.pages.create({
+      parent: {
+        database_id: databaseId,
+      },
+      properties: {
+        'Artwork License': {
+          rich_text: [
+            {
+              text: {
+                content: payload.artworkLicense,
+              },
+            },
+          ],
+        },
+        'Artwork License Certifier': {
+          rich_text: [
+            {
+              text: {
+                content: payload.artworkLicenseCertifier,
+              },
+            },
+          ],
+        },
+        'Artwork License Date': {
+          date: {
+            start: payload.artworkLicenseDate,
+          },
+        },
+        'Asset Identity': {
+          rich_text: [
+            {
+              text: {
+                content: payload.assetIdentity,
+              },
+            },
+          ],
+        },
+        'Asset Identity Certifier': {
+          rich_text: [
+            {
+              text: {
+                content: payload.assetIdentityCertifier,
+              },
+            },
+          ],
+        },
+        'Asset Identity Date': {
+          date: {
+            start: payload.assetIdentityDate,
+          },
+        },
+        'Carbon Offset': {
+          rich_text: [
+            {
+              text: {
+                content: payload.carbonOffset,
+              },
+            },
+          ],
+        },
+        'Carbon Offset Certifier': {
+          rich_text: [
+            {
+              text: {
+                content: payload.carbonOffsetCertifier,
+              },
+            },
+          ],
+        },
+        'Carbon Offset Date': {
+          date: {
+            start: payload.carbonOffsetDate,
+          },
+        },
+        Category: {
+          select: {
+            name: payload.category,
+          },
+        },
+        ID: {
+          title: [
+            {
+              text: {
+                content: payload.id,
+              },
+            },
+          ],
+        },
+        Images: {
+          files: [
+            ...payload.images.split(',').map((image) => ({
+              external: {
+                url: image.trim(),
+              },
+              name: 'image',
+            })),
+          ],
+        },
+        'NFT Pairing': {
+          rich_text: [
+            {
+              text: {
+                content: payload.nftPairing,
+              },
+            },
+          ],
+        },
+        'NFT Pairing Certifier': {
+          rich_text: [
+            {
+              text: {
+                content: payload.nftPairingCertifier,
+              },
+            },
+          ],
+        },
+        'NFT Pairing Date': {
+          date: {
+            start: payload.nftPairingDate,
+          },
+        },
+        Subtitle: {
+          rich_text: [
+            {
+              text: {
+                content: payload.subtitle,
+              },
+            },
+          ],
+        },
+        Title: {
+          rich_text: [
+            {
+              text: {
+                content: payload.title,
+              },
+            },
+          ],
+        },
+        'Vault Report': {
+          rich_text: [
+            {
+              text: {
+                content: payload.vaultReport,
+              },
+            },
+          ],
+        },
+        'Vault Report Certifier': {
+          rich_text: [
+            {
+              text: {
+                content: payload.vaultReportCertifier,
+              },
+            },
+          ],
+        },
+        'Vault Report Date': {
+          date: {
+            start: payload.vaultReportDate,
+          },
         },
       },
     });

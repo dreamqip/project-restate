@@ -36,9 +36,14 @@ export default function Header() {
               <NavLink href='/wallet'>03 XRPL Wallet</NavLink>
             </li>
             {wallet ? (
-              <li className='transition-colors hover:text-foreground'>
-                <NavLink href='/wallet/settings'>04 Settings</NavLink>
-              </li>
+              <>
+                <li className='transition-colors hover:text-foreground'>
+                  <NavLink href='/wallet/settings'>04 Settings</NavLink>
+                </li>
+                <li className='transition-colors hover:text-foreground'>
+                  <NavLink href='/mint'>05 Mint</NavLink>
+                </li>
+              </>
             ) : null}
           </ul>
         )}
