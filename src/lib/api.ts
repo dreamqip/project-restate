@@ -32,7 +32,7 @@ export async function getOffers(
 
 export async function getAssetById(
   nftId: string,
-): Promise<FullAssetResponse | string> {
+): Promise<FullAssetResponse> {
   const url = new URL(`/api/assets/${nftId}`, process.env.NEXT_PUBLIC_HOST);
 
   const response = await fetch(url.toString(), {
